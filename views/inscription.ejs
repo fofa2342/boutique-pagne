@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription Client</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px 0;
+      box-shadow: var(--box-shadow);
+      z-index: 100;
+      transition: var(--transition);
+      overflow-y: auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      margin-left: 10px;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+
+    .nav-section {
+      margin-bottom: 30px;
+    }
+
+    .nav-section h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 20px;
+      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-item.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-icon {
+      margin-right: 12px;
+      font-size: 1.2rem;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .header h1 {
+      color: var(--secondary-color);
+      font-size: 1.8rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-icon {
+      margin-right: 8px;
+    }
+
+    /* Form Container */
+    .form-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark-color);
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .required::after {
+      content: " *";
+      color: var(--accent-color);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .btn-secondary {
+      background-color: var(--light-color);
+      color: var(--dark-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: #dde4e6;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #2980b9;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+      }
+      
+      .nav-items {
+        display: flex;
+        overflow-x: auto;
+      }
+      
+      .nav-section {
+        margin-bottom: 0;
+        min-width: max-content;
+      }
+      
+      .nav-section h2 {
+        display: none;
+      }
+      
+      .form-container {
+        padding: 20px;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">📊</span>
+      <h1>Gestion Commerciale</h1>
+    </div>
+    
+    <div class="nav-section">
+      <h2>Navigation</h2>
+      <a href="/clients" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span>Liste des Clients</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">📋</span>
+        <span>Commandes en Cours</span>
+      </a>
+      <a href="/clients/inscription" class="nav-item active">
+        <span class="nav-icon">➕</span>
+        <span>Nouveau Client</span>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h1>Inscription d'un nouveau client</h1>
+      <a href="/clients" class="btn btn-secondary">
+        <span class="btn-icon">←</span>
+        Retour
+      </a>
+    </div>
+    
+    <div class="form-container">
+      <form action="/clients/inscription" method="POST">
+        <div class="form-group">
+          <label for="nom" class="required">Nom :</label>
+          <input type="text" id="nom" name="nom" required placeholder="Entrez le nom complet">
+        </div>
+
+        <div class="form-group">
+          <label for="telephone" class="required">Téléphone :</label>
+          <input type="text" id="telephone" name="telephone" required placeholder="Ex: 01 23 45 67 89">
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email :</label>
+          <input type="email" id="email" name="email" placeholder="exemple@email.com">
+        </div>
+
+        <div class="form-group">
+          <label for="adresse">Adresse :</label>
+          <textarea id="adresse" name="adresse" placeholder="Adresse complète du client"></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="reset" class="btn btn-secondary">Effacer</button>
+          <button type="submit" class="btn btn-primary">S'inscrire</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Script pour gérer l'interactivité
+    document.addEventListener('DOMContentLoaded', function() {
+      // Navigation active
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => {
+        item.addEventListener('click', function() {
+          navItems.forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+      
+      // Validation du formulaire
+      const form = document.querySelector('form');
+      form.addEventListener('submit', function(e) {
+        const nom = document.getElementById('nom').value.trim();
+        const telephone = document.getElementById('telephone').value.trim();
+        
+        if (!nom) {
+          e.preventDefault();
+          alert('Veuillez saisir un nom');
+          document.getElementById('nom').focus();
+          return;
+        }
+        
+        if (!telephone) {
+          e.preventDefault();
+          alert('Veuillez saisir un numéro de téléphone');
+          document.getElementById('telephone').focus();
+          return;
+        }
+        
+        // Validation basique du téléphone
+        const phoneRegex = /^[0-9\s\-\+\(\)\.]{10,}$/;
+        if (!phoneRegex.test(telephone)) {
+          e.preventDefault();
+          alert('Veuillez saisir un numéro de téléphone valide');
+          document.getElementById('telephone').focus();
+          return;
+        }
+        
+        // Si tout est valide, on peut afficher un message de confirmation
+        alert('Formulaire soumis avec succès !');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tableau de Bord - Gestion Commerciale</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 280px;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px 0;
+      box-shadow: var(--box-shadow);
+      z-index: 100;
+      transition: var(--transition);
+      overflow-y: auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      margin-left: 10px;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+
+    .nav-section {
+      margin-bottom: 30px;
+    }
+
+    .nav-section h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 20px;
+      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-item.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-icon {
+      margin-right: 12px;
+      font-size: 1.2rem;
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .header h1 {
+      color: var(--secondary-color);
+      font-size: 2rem;
+    }
+
+    .welcome-section {
+      background: linear-gradient(135deg, var(--primary-color), #2980b9);
+      color: white;
+      padding: 40px;
+      border-radius: var(--border-radius);
+      margin-bottom: 40px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .welcome-section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .welcome-section p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    /* Dashboard Cards */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+
+    .dashboard-card {
+      background: white;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      transition: var(--transition);
+      text-decoration: none;
+      color: inherit;
+      border: 2px solid transparent;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary-color);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-right: 15px;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--secondary-color);
+      margin-bottom: 5px;
+    }
+
+    .card-description {
+      color: var(--dark-color);
+      opacity: 0.8;
+      line-height: 1.5;
+    }
+
+    /* Quick Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 25px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+
+    .stat-label {
+      color: var(--dark-color);
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    /* Recent Activity */
+    .activity-section {
+      background: white;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      color: var(--secondary-color);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--light-color);
+    }
+
+    .activity-list {
+      list-style: none;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      padding: 15px 0;
+      border-bottom: 1px solid var(--light-color);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-icon {
+      font-size: 1.2rem;
+      margin-right: 15px;
+      width: 30px;
+      text-align: center;
+    }
+
+    .activity-content {
+      flex: 1;
+    }
+
+    .activity-text {
+      margin-bottom: 5px;
+    }
+
+    .activity-time {
+      font-size: 0.8rem;
+      color: var(--dark-color);
+      opacity: 0.7;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+      }
+      
+      .nav-items {
+        display: flex;
+        overflow-x: auto;
+      }
+      
+      .nav-section {
+        margin-bottom: 0;
+        min-width: max-content;
+      }
+      
+      .nav-section h2 {
+        display: none;
+      }
+      
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .welcome-section {
+        padding: 25px;
+      }
+      
+      .header h1 {
+        font-size: 1.6rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .main-content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">📊</span>
+      <h1>Gestion Commerciale</h1>
+    </div>
+    
+    <div class="nav-section">
+      <h2>Navigation</h2>
+      <a href="/" class="nav-item active">
+        <span class="nav-icon">🏠</span>
+        <span>Tableau de Bord</span>
+      </a>
+      <a href="/clients" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span>Gestion Clients</span>
+      </a>
+      <a href="/fournisseurs" class="nav-item">
+        <span class="nav-icon">🏭</span>
+        <span>Gestion Fournisseurs</span>
+      </a>
+      <a href="/produits" class="nav-item">
+        <span class="nav-icon">📦</span>
+        <span>Produits</span>
+      </a>
+    </div>
+    
+    <div class="nav-section">
+      <h2>Actions Rapides</h2>
+      <a href="/clients/inscription" class="nav-item">
+        <span class="nav-icon">➕</span>
+        <span>Nouveau Client</span>
+      </a>
+      <a href="/fournisseurs/inscription" class="nav-item">
+        <span class="nav-icon">➕</span>
+        <span>Nouveau Fournisseur</span>
+      </a>
+    </div>
+    
+    <div class="nav-section">
+      <h2>Analytique</h2>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">📈</span>
+        <span>Rapports</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">💰</span>
+        <span>Statistiques</span>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h1>Tableau de Bord</h1>
+      <div class="current-time" id="currentTime"></div>
+    </div>
+    
+    <div class="welcome-section">
+      <h2>Bienvenue dans votre espace de gestion</h2>
+      <p>Gérez efficacement vos clients, fournisseurs et activités commerciales</p>
+    </div>
+    
+    <!-- Dashboard Cards -->
+    <div class="dashboard-grid">
+      <a href="/clients" class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon">👥</div>
+          <div>
+            <div class="card-title">Gestion Clients</div>
+            <div class="card-description">Consultez et gérez votre base de clients</div>
+          </div>
+        </div>
+      </a>
+      
+      <a href="/fournisseurs" class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon">🏭</div>
+          <div>
+            <div class="card-title">Gestion Fournisseurs</div>
+            <div class="card-description">Managez vos partenaires fournisseurs</div>
+          </div>
+        </div>
+      </a>
+      <a href="/produits" class="dashboard-card">
+        <div class="card-header"> 
+          <div class="card-icon">📦</div>
+          <div>
+            <div class="card-title">Gestion Produits</div>
+            <div class="card-description">Managez vos produits</div>
+          </div>
+        </div>
+      </a>     
+      <a href="/clients/inscription" class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon">➕</div>
+          <div>
+            <div class="card-title">Nouveau Client</div>
+            <div class="card-description">Ajoutez un nouveau client à votre base</div>
+          </div>
+        </div>
+      </a>
+      
+      <a href="/fournisseurs/inscription" class="dashboard-card">
+        <div class="card-header">
+          <div class="card-icon">➕</div>
+          <div>
+            <div class="card-title">Nouveau Fournisseur</div>
+            <div class="card-description">Enregistrez un nouveau partenaire</div>
+          </div>
+        </div>
+      </a>
+    </div>
+    
+    <!-- Quick Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="clientsCount">-</div>
+        <div class="stat-label">Clients Actifs</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-number" id="fournisseursCount">-</div>
+        <div class="stat-label">Fournisseurs</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Commandes du Jour</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-number">0</div>
+        <div class="stat-label">Revenus Mensuels</div>
+      </div>
+    </div>
+    
+    <!-- Recent Activity -->
+    <div class="activity-section">
+      <h3 class="section-title">Activité Récente</h3>
+      <ul class="activity-list">
+        <li class="activity-item">
+          <div class="activity-icon">👥</div>
+          <div class="activity-content">
+            <div class="activity-text">Nouveau client ajouté</div>
+            <div class="activity-time">Il y a 2 heures</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon">🏭</div>
+          <div class="activity-content">
+            <div class="activity-text">Fournisseur mis à jour</div>
+            <div class="activity-time">Il y a 5 heures</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon">📊</div>
+          <div class="activity-content">
+            <div class="activity-text">Rapport mensuel généré</div>
+            <div class="activity-time">Hier</div>
+          </div>
+        </li>
+        <li class="activity-item">
+          <div class="activity-icon">👥</div>
+          <div class="activity-content">
+            <div class="activity-text">3 nouveaux clients cette semaine</div>
+            <div class="activity-time">Il y a 2 jours</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Navigation active
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => {
+        item.addEventListener('click', function() {
+          navItems.forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+      
+      // Heure actuelle
+      function updateTime() {
+        const now = new Date();
+        const options = { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        };
+        document.getElementById('currentTime').textContent = 
+          now.toLocaleDateString('fr-FR', options);
+      }
+      
+      updateTime();
+      setInterval(updateTime, 60000);
+      
+      // Animation des cartes
+      const cards = document.querySelectorAll('.dashboard-card');
+      cards.forEach((card, index) => {
+        card.style.animationDelay = `${index * 0.1}s`;
+      });
+      
+      // Simulation des statistiques (à remplacer par des appels API réels)
+      setTimeout(() => {
+        document.getElementById('clientsCount').textContent = '12';
+        document.getElementById('fournisseursCount').textContent = '8';
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

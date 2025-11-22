@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Succès - Produit</title>
+  <style>
+    /* Reprendre le même CSS que les autres pages */
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    .sidebar {
+      width: 280px;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px 0;
+      box-shadow: var(--box-shadow);
+      z-index: 100;
+      transition: var(--transition);
+      overflow-y: auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      margin-left: 10px;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+
+    .nav-section {
+      margin-bottom: 30px;
+    }
+
+    .nav-section h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 20px;
+      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-item.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-icon {
+      margin-right: 12px;
+      font-size: 1.2rem;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .header h1 {
+      color: var(--secondary-color);
+      font-size: 1.8rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-icon {
+      margin-right: 8px;
+    }
+
+    .form-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark-color);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .required::after {
+      content: " *";
+      color: var(--accent-color);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .btn-secondary {
+      background-color: var(--light-color);
+      color: var(--dark-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: #dde4e6;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+      }
+      
+      .nav-items {
+        display: flex;
+        overflow-x: auto;
+      }
+      
+      .nav-section {
+        margin-bottom: 0;
+        min-width: max-content;
+      }
+      
+      .nav-section h2 {
+        display: none;
+      }
+      
+      .form-container {
+        padding: 20px;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">📦</span>
+      <h1>Gestion Stock</h1>
+    </div>
+    
+    <div class="nav-section">
+      <h2>Navigation</h2>
+      <a href="/produits" class="nav-item">
+        <span class="nav-icon">📦</span>
+        <span>Liste Produits</span>
+      </a>
+      <a href="/produits/ajout" class="nav-item">
+        <span class="nav-icon">➕</span>
+        <span>Nouveau Produit</span>
+      </a>
+    </div>
+  </div>
+  
+  <div class="main-content">
+    <div class="success-container">
+      <div class="success-icon">✅</div>
+      <h1 class="success-title">Succès !</h1>
+      <p class="success-message"><%- message %></p>
+      
+      <div class="action-buttons">
+        <a href="/produits/ajout" class="btn btn-secondary">
+          <span class="btn-icon">➕</span>
+          Nouveau produit
+        </a>
+        <a href="/produits" class="btn btn-success">
+          <span class="btn-icon">📦</span>
+          Liste des produits
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

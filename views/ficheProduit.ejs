@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fiche Produit - <%= produit.nom %></title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    .sidebar {
+      width: 280px;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px 0;
+      box-shadow: var(--box-shadow);
+      z-index: 100;
+      transition: var(--transition);
+      overflow-y: auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      margin-left: 10px;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+
+    .nav-section {
+      margin-bottom: 30px;
+    }
+
+    .nav-section h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 20px;
+      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-item.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-icon {
+      margin-right: 12px;
+      font-size: 1.2rem;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .header h1 {
+      color: var(--secondary-color);
+      font-size: 1.8rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-icon {
+      margin-right: 8px;
+    }
+
+    .btn-secondary {
+      background-color: var(--light-color);
+      color: var(--dark-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: #dde4e6;
+    }
+
+    .btn-warning {
+      background-color: var(--warning-color);
+    }
+
+    .btn-warning:hover {
+      background-color: #e67e22;
+    }
+
+    .btn-danger {
+      background-color: var(--accent-color);
+    }
+
+    .btn-danger:hover {
+      background-color: #c0392b;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+      max-width: 800px;
+      width: 100%;
+    }
+
+    .product-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 30px;
+    }
+
+    .product-title {
+      color: var(--secondary-color);
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+
+    .product-description {
+      color: var(--dark-color);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .info-card {
+      background: var(--light-color);
+      padding: 20px;
+      border-radius: var(--border-radius);
+      text-align: center;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .info-label {
+      font-size: 0.9rem;
+      color: var(--dark-color);
+      opacity: 0.8;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .info-value {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: var(--secondary-color);
+      margin: 0;
+    }
+
+    .stock-warning {
+      color: var(--accent-color) !important;
+    }
+
+    .stock-ok {
+      color: var(--success-color) !important;
+    }
+
+    .marge-positive {
+      color: var(--success-color) !important;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .product-icon {
+      font-size: 3rem;
+      opacity: 0.8;
+      margin-left: 20px;
+    }
+
+    .actions-section {
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--light-color);
+    }
+
+    .actions-title {
+      color: var(--secondary-color);
+      margin-bottom: 15px;
+      font-size: 1.2rem;
+    }
+
+    .danger-zone {
+      background-color: #fff5f5;
+      border: 1px solid #fed7d7;
+      border-radius: var(--border-radius);
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .danger-zone-title {
+      color: var(--accent-color);
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+
+    .danger-zone-text {
+      color: var(--dark-color);
+      font-size: 0.9rem;
+      margin-bottom: 15px;
+      opacity: 0.8;
+    }
+
+    /* Modal de modification */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 600px;
+      box-shadow: var(--box-shadow);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-title {
+      color: var(--secondary-color);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .modal-text {
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    /* Formulaire */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark-color);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    .form-textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+      }
+      
+      .nav-items {
+        display: flex;
+        overflow-x: auto;
+      }
+      
+      .nav-section {
+        margin-bottom: 0;
+        min-width: max-content;
+      }
+      
+      .nav-section h2 {
+        display: none;
+      }
+      
+      .product-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .product-icon {
+        margin-left: 0;
+        margin-top: 15px;
+      }
+      
+      .info-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .action-buttons .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .modal-content {
+        margin: 10% auto;
+        width: 95%;
+      }
+
+      .modal-actions {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .product-card {
+        padding: 20px;
+      }
+      
+      .main-content {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">📦</span>
+      <h1>Gestion Stock</h1>
+    </div>
+    
+    <div class="nav-section">
+      <h2>Navigation</h2>
+      <a href="/produits" class="nav-item">
+        <span class="nav-icon">📦</span>
+        <span>Liste Produits</span>
+      </a>
+      <a href="/produits/ajout" class="nav-item">
+        <span class="nav-icon">➕</span>
+        <span>Nouveau Produit</span>
+      </a>
+    </div>
+  </div>
+  
+  <div class="main-content">
+    <div class="header">
+      <h1>Fiche Produit</h1>
+      <a href="/produits" class="btn btn-secondary">
+        <span class="btn-icon">←</span>
+        Retour
+      </a>
+    </div>
+
+    <div class="product-card">
+      <div class="product-header">
+        <div style="flex: 1;">
+          <h1 class="product-title"><%= produit.nom %></h1>
+          <% if (produit.description) { %>
+            <p class="product-description"><%= produit.description %></p>
+          <% } %>
+        </div>
+        <div class="product-icon">📦</div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-label">Prix d'achat</div>
+          <div class="info-value"><%= produit.prix_achat %> €</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-label">Prix de vente</div>
+          <div class="info-value"><%= produit.prix_vente %> €</div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-label">Marge</div>
+          <div class="info-value marge-positive">
+            <% const marge = produit.prix_vente - produit.prix_achat; %>
+            <%= marge.toFixed(2) %> €
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-label">Stock actuel</div>
+          <div class="info-value <%= produit.quantite_stock <= produit.seuil_alerte ? 'stock-warning' : 'stock-ok' %>">
+            <%= produit.quantite_stock %>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-label">Seuil d'alerte</div>
+          <div class="info-value"><%= produit.seuil_alerte %></div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-label">Statut</div>
+          <div class="info-value <%= produit.quantite_stock <= produit.seuil_alerte ? 'stock-warning' : 'stock-ok' %>">
+            <% if (produit.quantite_stock <= produit.seuil_alerte) { %>
+              ⚠️ Stock faible
+            <% } else { %>
+              ✅ En stock
+            <% } %>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-buttons">
+        <a href="/produits/entree" class="btn">
+          <span class="btn-icon">📥</span>
+          Entrée stock
+        </a>
+        <a href="/produits/sortie" class="btn">
+          <span class="btn-icon">📤</span>
+          Sortie stock
+        </a>
+        <a href="/produits/alertes" class="btn">
+          <span class="btn-icon">⚠️</span>
+          Voir alertes
+        </a>
+      </div>
+
+      <!-- Section Actions de gestion -->
+      <div class="actions-section">
+        <h3 class="actions-title">Gestion du produit</h3>
+        <div class="action-buttons">
+          <button onclick="openEditModal()" class="btn btn-warning">
+            <span class="btn-icon">✏️</span>
+            Modifier le produit
+          </button>
+          <button onclick="openDeleteModal()" class="btn btn-danger">
+            <span class="btn-icon">🗑️</span>
+            Supprimer le produit
+          </button>
+        </div>
+      </div>
+
+      <!-- Zone de danger -->
+      <div class="danger-zone">
+        <h4 class="danger-zone-title">Zone de danger</h4>
+        <p class="danger-zone-text">
+          ⚠️ La suppression est définitive et ne peut pas être annulée. 
+          Toutes les données associées à ce produit seront perdues.
+        </p>
+        <button onclick="openDeleteModal()" class="btn btn-danger">
+          <span class="btn-icon">🗑️</span>
+          Supprimer définitivement
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de modification -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h3 class="modal-title">Modifier le produit</h3>
+      
+      <form id="editForm" action="/produits/modifier/<%= produit.id_produit %>" method="POST">
+        <div class="form-group">
+          <label class="form-label">Nom du produit</label>
+          <input type="text" name="nom" class="form-input" value="<%= produit.nom %>" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea name="description" class="form-input form-textarea"><%= produit.description || '' %></textarea>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label class="form-label">Prix d'achat (€)</label>
+            <input type="number" step="0.01" name="prix_achat" class="form-input" value="<%= produit.prix_achat %>" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Prix de vente (€)</label>
+            <input type="number" step="0.01" name="prix_vente" class="form-input" value="<%= produit.prix_vente %>" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+          <div class="form-group">
+            <label class="form-label">Stock actuel</label>
+            <input type="number" name="quantite_stock" class="form-input" value="<%= produit.quantite_stock %>" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Seuil d'alerte</label>
+            <input type="number" name="seuil_alerte" class="form-input" value="<%= produit.seuil_alerte %>" required>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" onclick="closeEditModal()" class="btn btn-secondary">
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-warning">
+            <span class="btn-icon">💾</span>
+            Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de confirmation de suppression -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h3 class="modal-title">Confirmer la suppression</h3>
+      <p class="modal-text">
+        Êtes-vous sûr de vouloir supprimer le produit <strong>"<%= produit.nom %>"</strong> ?<br><br>
+        Cette action est irréversible et supprimera toutes les données associées à ce produit.
+      </p>
+      <div class="modal-actions">
+        <button onclick="closeDeleteModal()" class="btn btn-secondary">
+          Annuler
+        </button>
+        <form id="deleteForm" action="/produits/supprimer/<%= produit.id_produit %>" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-danger">
+            <span class="btn-icon">🗑️</span>
+            Supprimer définitivement
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const navItems = document.querySelectorAll('.nav-item');
+      navItems.forEach(item => {
+        item.addEventListener('click', function() {
+          navItems.forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    });
+
+    // Gestion des modals
+    function openEditModal() {
+      document.getElementById('editModal').style.display = 'block';
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    function openDeleteModal() {
+      document.getElementById('deleteModal').style.display = 'block';
+    }
+
+    function closeDeleteModal() {
+      document.getElementById('deleteModal').style.display = 'none';
+    }
+
+    // Fermer les modals en cliquant en dehors
+    window.onclick = function(event) {
+      const editModal = document.getElementById('editModal');
+      const deleteModal = document.getElementById('deleteModal');
+      
+      if (event.target === editModal) {
+        closeEditModal();
+      }
+      if (event.target === deleteModal) {
+        closeDeleteModal();
+      }
+    }
+
+    // Validation du formulaire de modification
+    document.getElementById('editForm').addEventListener('submit', function(e) {
+      const prixAchat = parseFloat(this.prix_achat.value);
+      const prixVente = parseFloat(this.prix_vente.value);
+      
+      if (prixVente < prixAchat) {
+        e.preventDefault();
+        alert('Le prix de vente ne peut pas être inférieur au prix d\'achat !');
+        return false;
+      }
+    });
+
+    // Confirmation pour la suppression
+    document.getElementById('deleteForm').addEventListener('submit', function(e) {
+      const confirmation = confirm('Êtes-vous ABSOLUMENT SÛR de vouloir supprimer ce produit ? Cette action ne peut pas être annulée.');
+      if (!confirmation) {
+        e.preventDefault();
+        closeDeleteModal();
+      }
+    });
+  </script>
+</body>
+</html>

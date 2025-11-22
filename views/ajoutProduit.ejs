@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ajouter un Produit</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    .sidebar {
+      width: 280px;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px 0;
+      box-shadow: var(--box-shadow);
+      z-index: 100;
+      transition: var(--transition);
+      overflow-y: auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      margin-left: 10px;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+
+    .nav-section {
+      margin-bottom: 30px;
+    }
+
+    .nav-section h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 20px;
+      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-item.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-icon {
+      margin-right: 12px;
+      font-size: 1.2rem;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .header h1 {
+      color: var(--secondary-color);
+      font-size: 1.8rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-icon {
+      margin-right: 8px;
+    }
+
+    .btn-secondary {
+      background-color: var(--light-color);
+      color: var(--dark-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: #dde4e6;
+    }
+
+    .form-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark-color);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .required::after {
+      content: " *";
+      color: var(--accent-color);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .marge-info {
+      background-color: var(--light-color);
+      padding: 15px;
+      border-radius: var(--border-radius);
+      margin-top: 10px;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .marge-positive {
+      color: var(--success-color);
+    }
+
+    .marge-negative {
+      color: var(--accent-color);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+      }
+      
+      .nav-items {
+        display: flex;
+        overflow-x: auto;
+      }
+      
+      .nav-section {
+        margin-bottom: 0;
+        min-width: max-content;
+      }
+      
+      .nav-section h2 {
+        display: none;
+      }
+      
+      .form-container {
+        padding: 20px;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main-content {
+        padding: 20px;
+      }
+      
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      
+      .header h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">📦</span>
+      <h1>Gestion Stock</h1>
+    </div>
+    
+    <div class="nav-section">
+      <h2>Navigation</h2>
+      <a href="/produits" class="nav-item">
+        <span class="nav-icon">📦</span>
+        <span>Liste Produits</span>
+      </a>
+      <a href="/produits/ajout" class="nav-item active">
+        <span class="nav-icon">➕</span>
+        <span>Nouveau Produit</span>
+      </a>
+      <a href="/clients" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span>Clients</span>
+      </a>
+      <a href="/fournisseurs" class="nav-item">
+        <span class="nav-icon">🏭</span>
+        <span>Fournisseurs</span>
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <h2>Gestion Stock</h2>
+      <a href="/produits/entree" class="nav-item">
+        <span class="nav-icon">📥</span>
+        <span>Entrée Stock</span>
+      </a>
+      <a href="/produits/sortie" class="nav-item">
+        <span class="nav-icon">📤</span>
+        <span>Sortie Stock</span>
+      </a>
+      <a href="/produits/alertes" class="nav-item">
+        <span class="nav-icon">⚠️</span>
+        <span>Alertes Stock</span>
+      </a>
+    </div>
+  </div>
+  
+  <div class="main-content">
+    <div class="header">
+      <h1>Ajouter un Produit</h1>
+      <a href="/produits" class="btn btn-secondary">
+        <span class="btn-icon">←</span>
+        Retour
+      </a>
+    </div>
+    
+    <div class="form-container">
+      <form action="/produits/ajout" method="POST">
+        <div class="form-group">
+          <label for="nom" class="required">Nom du produit :</label>
+          <input type="text" id="nom" name="nom" required placeholder="Ex: Ordinateur Portable Dell">
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description :</label>
+          <textarea id="description" name="description" placeholder="Description détaillée du produit..."></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="prix_achat" class="required">Prix d'achat (€) :</label>
+            <input type="number" id="prix_achat" name="prix_achat" step="0.01" min="0" required placeholder="0.00">
+          </div>
+
+          <div class="form-group">
+            <label for="prix_vente" class="required">Prix de vente (€) :</label>
+            <input type="number" id="prix_vente" name="prix_vente" step="0.01" min="0" required placeholder="0.00">
+          </div>
+        </div>
+
+        <!-- Affichage de la marge en temps réel -->
+        <div id="marge-info" class="marge-info" style="display: none;">
+          <span>Marge : </span>
+          <span id="marge-value">0.00 €</span>
+          <span id="marge-pourcentage"></span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="quantite_stock">Quantité en stock :</label>
+            <input type="number" id="quantite_stock" name="quantite_stock" min="0" value="0" placeholder="0">
+          </div>
+
+          <div class="form-group">
+            <label for="seuil_alerte">Seuil d'alerte :</label>
+            <input type="number" id="seuil_alerte" name="seuil_alerte" min="1" value="5" placeholder="5">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="reset" class="btn btn-secondary">Effacer</button>
+          <button type="submit" class="btn btn-primary">Enregistrer le produit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const navItems = document.querySelectorAll('.nav-item');
+      const prixAchatInput = document.getElementById('prix_achat');
+      const prixVenteInput = document.getElementById('prix_vente');
+      const margeInfo = document.getElementById('marge-info');
+      const margeValue = document.getElementById('marge-value');
+      const margePourcentage = document.getElementById('marge-pourcentage');
+
+      // Navigation active
+      navItems.forEach(item => {
+        item.addEventListener('click', function() {
+          navItems.forEach(i => i.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+
+      // Calcul de la marge en temps réel
+      function calculerMarge() {
+        const prixAchat = parseFloat(prixAchatInput.value) || 0;
+        const prixVente = parseFloat(prixVenteInput.value) || 0;
+        
+        if (prixAchat > 0 && prixVente > 0) {
+          const marge = prixVente - prixAchat;
+          const pourcentage = ((marge / prixAchat) * 100).toFixed(1);
+          
+          margeValue.textContent = `${marge.toFixed(2)} €`;
+          margePourcentage.textContent = `(${pourcentage}%)`;
+          
+          if (marge > 0) {
+            margeValue.className = 'marge-positive';
+            margeInfo.style.display = 'block';
+          } else {
+            margeValue.className = 'marge-negative';
+            margeInfo.style.display = 'block';
+          }
+        } else {
+          margeInfo.style.display = 'none';
+        }
+      }
+
+      prixAchatInput.addEventListener('input', calculerMarge);
+      prixVenteInput.addEventListener('input', calculerMarge);
+
+      // Validation des prix
+      const form = document.querySelector('form');
+      form.addEventListener('submit', function(e) {
+        const prixAchat = parseFloat(prixAchatInput.value);
+        const prixVente = parseFloat(prixVenteInput.value);
+        const quantiteStock = parseInt(document.getElementById('quantite_stock').value) || 0;
+        const seuilAlerte = parseInt(document.getElementById('seuil_alerte').value) || 5;
+        
+        // Validation prix de vente > prix d'achat
+        if (prixVente <= prixAchat) {
+          e.preventDefault();
+          alert('Le prix de vente doit être supérieur au prix d\'achat !');
+          prixVenteInput.focus();
+          return;
+        }
+
+        // Validation seuil d'alerte cohérent
+        if (quantiteStock > 0 && seuilAlerte > quantiteStock) {
+          e.preventDefault();
+          alert('Le seuil d\'alerte ne peut pas être supérieur à la quantité en stock !');
+          document.getElementById('seuil_alerte').focus();
+          return;
+        }
+
+        // Confirmation avant envoi
+        if (!confirm('Êtes-vous sûr de vouloir enregistrer ce produit ?')) {
+          e.preventDefault();
+        }
+      });
+
+      // Validation en temps réel du seuil d'alerte
+      const quantiteStockInput = document.getElementById('quantite_stock');
+      const seuilAlerteInput = document.getElementById('seuil_alerte');
+
+      quantiteStockInput.addEventListener('input', function() {
+        const quantite = parseInt(this.value) || 0;
+        const seuil = parseInt(seuilAlerteInput.value) || 5;
+        
+        if (quantite > 0 && seuil > quantite) {
+          seuilAlerteInput.setCustomValidity('Le seuil d\'alerte ne peut pas être supérieur à la quantité en stock');
+        } else {
+          seuilAlerteInput.setCustomValidity('');
+        }
+      });
+
+      seuilAlerteInput.addEventListener('input', function() {
+        const quantite = parseInt(quantiteStockInput.value) || 0;
+        const seuil = parseInt(this.value) || 5;
+        
+        if (quantite > 0 && seuil > quantite) {
+          this.setCustomValidity('Le seuil d\'alerte ne peut pas être supérieur à la quantité en stock');
+        } else {
+          this.setCustomValidity('');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

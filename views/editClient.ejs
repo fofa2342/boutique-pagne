@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modifier le Client</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+    .sidebar {
+      width: 280px;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px 0;
+    }
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .form-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 30px;
+      width: 100%;
+      max-width: 600px;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark-color);
+    }
+    input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-secondary {
+      background-color: var(--light-color);
+      color: var(--dark-color);
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <!-- Le contenu de votre sidebar peut être inséré ici si besoin -->
+  </div>
+  <div class="main-content">
+    <h1>Modifier le Client</h1>
+    <div class="form-container">
+      <form action="/clients/modifier/<%= client.id_client %>" method="POST">
+        <div class="form-group">
+          <label for="nom">Nom</label>
+          <input type="text" id="nom" name="nom" value="<%= client.nom %>" required>
+        </div>
+        <div class="form-group">
+          <label for="telephone">Téléphone</label>
+          <input type="text" id="telephone" name="telephone" value="<%= client.telephone %>" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" value="<%= client.email %>">
+        </div>
+        <div class="form-group">
+          <label for="adresse">Adresse</label>
+          <input type="text" id="adresse" name="adresse" value="<%= client.adresse %>">
+        </div>
+        <button type="submit" class="btn">Mettre à jour</button>
+        <a href="/clients" class="btn btn-secondary">Annuler</a>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

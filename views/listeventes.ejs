@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Liste des ventes</title>
+<style>
+  :root {
+    --primary-color: #4361ee;
+    --primary-dark: #3a56d4;
+    --secondary-color: #2b2d42;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --success-color: #4cc9a7;
+    --warning-color: #fca311;
+    --danger-color: #e63946;
+    --gray-light: #e9ecef;
+    --gray-medium: #adb5bd;
+    --border-radius: 10px;
+    --border-radius-sm: 6px;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --box-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    color: var(--dark-color);
+    line-height: 1.6;
+    padding: 30px;
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    color: var(--secondary-color);
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    text-align: center;
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gray-light);
+  }
+
+  .filter-section {
+    background: white;
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    margin-bottom: 30px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .form-group {
+    flex: 1;
+    min-width: 250px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--secondary-color);
+  }
+
+  input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--gray-medium);
+    border-radius: var(--border-radius-sm);
+    font-size: 1rem;
+    transition: var(--transition);
+    background-color: white;
+  }
+
+  input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    color: white;
+    text-decoration: none;
+    border-radius: var(--border-radius-sm);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn:hover::before {
+    left: 100%;
+  }
+
+  .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  .btn:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+  }
+
+  .btn-secondary {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, var(--danger-color), #c1121f);
+  }
+
+  .table-container {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+  }
+
+  thead {
+    background: linear-gradient(135deg, var(--secondary-color), #3a3d5c);
+  }
+
+  th {
+    padding: 16px 12px;
+    text-align: left;
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+    border-bottom: 2px solid var(--gray-light);
+  }
+
+  td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--gray-light);
+    transition: var(--transition);
+  }
+
+  tbody tr {
+    transition: var(--transition);
+  }
+
+  tbody tr:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .text-right {
+    text-align: right;
+  }
+
+  .amount-positive {
+    color: var(--success-color);
+    font-weight: 600;
+  }
+
+  .amount-negative {
+    color: var(--danger-color);
+    font-weight: 600;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .status-paid {
+    background-color: rgba(76, 201, 167, 0.2);
+    color: var(--success-color);
+  }
+
+  .status-pending {
+    background-color: rgba(252, 163, 17, 0.2);
+    color: var(--warning-color);
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .actions .btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  tfoot {
+    background-color: var(--light-color);
+    font-weight: 600;
+  }
+
+  tfoot th {
+    background: transparent;
+    color: var(--secondary-color);
+    text-transform: none;
+    letter-spacing: normal;
+    font-size: 1rem;
+  }
+
+  tfoot td {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--primary-color);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gray-medium);
+  }
+
+  .empty-state i {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    opacity: 0.5;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    body {
+      padding: 15px;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+    }
+
+    .filter-section {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .form-group {
+      min-width: auto;
+    }
+
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      min-width: 800px;
+    }
+
+    .actions {
+      flex-direction: column;
+    }
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .table-container {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  /* Mode sombre */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --light-color: #2d3748;
+      --dark-color: #f7fafc;
+      --secondary-color: #e2e8f0;
+      --gray-light: #4a5568;
+    }
+
+    body {
+      background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+      color: var(--dark-color);
+    }
+
+    .filter-section, .table-container {
+      background: #2d3748;
+    }
+
+    input {
+      background-color: #4a5568;
+      border-color: #718096;
+      color: var(--dark-color);
+    }
+
+    tfoot {
+      background-color: #4a5568;
+    }
+
+    tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Liste des ventes</h1>
+
+    <div class="filter-section">
+      <form method="GET" action="/ventes" style="width: 100%; display: flex; gap: 15px; align-items: flex-end; flex-wrap: wrap;">
+        <div class="form-group">
+          <label for="client">Filtrer par client</label>
+          <input type="text" id="client" name="client" placeholder="Nom du client" value="<%= filterName %>">
+        </div>
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+        <a href="/ventes" class="btn btn-secondary">Réinitialiser</a>
+      </form>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Client</th>
+            <th>Date</th>
+            <th class="text-right">Total TTC</th>
+            <th class="text-right">Montant payé</th>
+            <th class="text-right">Reste</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (ventes.length > 0) { %>
+            <% ventes.forEach(v => { %>
+              <tr>
+                <td><%= v.id_vente %></td>
+                <td><%= v.client_nom %></td>
+                <td><%= v.date_vente ? new Date(v.date_vente).toLocaleString() : '' %></td>
+                <td class="text-right"><%= typeof v.total_ttc === 'number' ? v.total_ttc.toFixed(2) : '0.00' %></td>
+                <td class="text-right"><%= typeof v.montant_paye === 'number' ? v.montant_paye.toFixed(2) : '0.00' %></td>
+                <td class="text-right <%= v.reste > 0 ? 'amount-negative' : 'amount-positive' %>">
+                  <%= typeof v.reste === 'number' ? v.reste.toFixed(2) : '0.00' %>
+                </td>
+                <td>
+                  <span class="status-badge <%= v.reste > 0 ? 'status-pending' : 'status-paid' %>">
+                    <%= v.reste > 0 ? 'En attente' : 'Payée' %>
+                  </span>
+                </td>
+                <td>
+                  <div class="actions">
+                    <a href="/ventes/<%= v.id_vente %>" class="btn btn-primary">Voir</a>
+                    <form action="/ventes/<%= v.id_vente %>/delete" method="POST" style="display:inline">
+                      <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette vente ?')">Suppr</button>
+                    </form>
+                    <% if (v.reste > 0) { %>
+                      <a href="/ventes/<%= v.id_vente %>" class="btn btn-primary">Payer</a>
+                    <% } %>
+                  </div>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="8" class="empty-state">
+                <div>
+                  <i>📋</i>
+                  <p>Aucune vente trouvée.</p>
+                </div>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+        <tfoot>
+          <tr>
+            <th colspan="5" class="text-right">Total restes :</th>
+            <th class="text-right <%= totalRestes > 0 ? 'amount-negative' : 'amount-positive' %>">
+              <%= typeof totalRestes === 'number' ? totalRestes.toFixed(2) : '0.00' %>
+            </th>
+            <th colspan="2"></th>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

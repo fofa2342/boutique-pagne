@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      margin: 0;
+      display: flex;
+    }
+    .sidebar { width: 280px; background-color: var(--secondary-color); color: white; padding: 20px 0; }
+    .main-content { flex: 1; padding: 30px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    h1 { color: var(--secondary-color); }
+    .btn { display: inline-flex; align-items: center; padding: 10px 20px; background-color: var(--primary-color); color: white; text-decoration: none; border-radius: var(--border-radius); border: none; cursor: pointer; }
+    .btn-sm { padding: 5px 10px; font-size: 0.9rem; }
+    .btn-warning { background-color: var(--warning-color); }
+    .btn-danger { background-color: var(--accent-color); }
+    .btn-secondary { background-color: #bdc3c7; }
+    .filter-container { background: white; padding: 20px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); margin-bottom: 30px; }
+    .filter-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; align-items: end; }
+    .form-group { display: flex; flex-direction: column; }
+    label { margin-bottom: 5px; font-weight: 500; }
+    input, select { padding: 10px; border: 1px solid #ddd; border-radius: var(--border-radius); }
+    .table-container { background: white; border-radius: var(--border-radius); box-shadow: var(--box-shadow); overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background-color: var(--light-color); }
+    .actions-cell { display: flex; gap: 10px; }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <!-- Sidebar content can be added here -->
+  </div>
+
+  <div class="main-content">
+    <div class="header">
+      <h1><%= title %></h1>
+      <a href="/dashboard" class="btn btn-secondary">Retour au Tableau de Bord</a>
+    </div>
+
+    <div class="filter-container">
+      <form action="/produits/mouvements/<%= type %>s" method="GET" class="filter-form">
+        <div class="form-group">
+          <label for="produit_id">Produit</label>
+          <select id="produit_id" name="produit_id">
+            <option value="">Tous les produits</option>
+            <% produits.forEach(p => { %>
+              <option value="<%= p.id_produit %>" <%= filters.produit_id == p.id_produit ? 'selected' : '' %>>
+                <%= p.nom %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="date_start">Date de début</label>
+          <input type="date" id="date_start" name="date_start" value="<%= filters.date_start || '' %>">
+        </div>
+        <div class="form-group">
+          <label for="date_end">Date de fin</label>
+          <input type="date" id="date_end" name="date_end" value="<%= filters.date_end || '' %>">
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn">Filtrer</button>
+          <a href="/produits/mouvements/<%= type %>s" class="btn btn-secondary" style="text-align: center; margin-top: 5px;">Effacer</a>
+        </div>
+      </form>
+    </div>
+
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <% if (type === 'entree') { %>
+              <th>Fournisseur</th>
+            <% } %>
+            <th>Raison</th>
+            <th>Notes</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (mouvements && mouvements.length > 0) { %>
+            <% mouvements.forEach(m => { %>
+              <tr>
+                <td><%= new Date(m.date_mouvement).toLocaleDateString('fr-FR') %></td>
+                <td><%= m.produit_nom %></td>
+                <td><%= m.quantite %></td>
+                <% if (type === 'entree') { %>
+                  <td><%= m.fournisseur_nom || 'N/A' %></td>
+                <% } %>
+                <td><%= m.raison %></td>
+                <td><%= m.notes %></td>
+                <td class="actions-cell">
+                  <a href="/produits/mouvements/modifier/<%= m.id_mouvement %>" class="btn btn-sm btn-warning">Modifier</a>
+                  <form action="/produits/mouvements/supprimer/<%= m.id_mouvement %>" method="POST" onsubmit="return confirm('Êtes-vous sûr ? Cette action ajustera le stock actuel.');">
+                    <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+                  </form>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 40px;">Aucun mouvement trouvé pour les filtres sélectionnés.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

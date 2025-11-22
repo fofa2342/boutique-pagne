@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Détails de la Vente</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    body { font-family: 'Segoe UI', sans-serif; background-color: #f5f7fa; color: #333; margin: 0; padding: 30px; }
+    .container { max-width: 900px; margin: auto; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+    h1 { color: var(--secondary-color); }
+    .card { background: white; padding: 25px; border-radius: var(--border-radius); box-shadow: var(--box-shadow); margin-bottom: 25px; }
+    .card h2 { color: var(--secondary-color); margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid var(--light-color); }
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .info-item strong { display: block; color: var(--dark-color); margin-bottom: 5px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background-color: var(--light-color); }
+    .text-right { text-align: right; }
+    .total-section { display: flex; justify-content: flex-end; margin-top: 20px; }
+    .total-summary { width: 300px; }
+    .summary-item { display: flex; justify-content: space-between; padding: 8px 0; }
+    .summary-item.total { font-weight: bold; font-size: 1.2rem; color: var(--primary-color); border-top: 2px solid var(--primary-color); margin-top: 10px; padding-top: 10px; }
+    .payment-form { margin-top: 20px; display: flex; gap: 15px; align-items: flex-end; }
+    .form-group { flex: 1; }
+    label { display: block; margin-bottom: 5px; font-weight: 500; }
+    input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: var(--border-radius); }
+    .btn { display: inline-block; padding: 10px 20px; background-color: var(--primary-color); color: white; text-decoration: none; border-radius: var(--border-radius); border: none; cursor: pointer; }
+    .btn-secondary { background-color: #7f8c8d; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Détails de la Vente #<%= vente.id_vente %></h1>
+      <a href="/ventes" class="btn btn-secondary">Retour à la liste</a>
+    </div>
+
+    <div class="card">
+      <h2>Informations Générales</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <strong>Client:</strong>
+          <span><%= vente.client_nom || 'Non spécifié' %></span>
+        </div>
+        <div class="info-item">
+          <strong>Date de la vente:</strong>
+          <span><%= new Date(vente.date_vente).toLocaleString('fr-FR') %></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Produits Achetés</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th class="text-right">Prix Unitaire</th>
+            <th class="text-right">Quantité</th>
+            <th class="text-right">Sous-total</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% details.forEach(item => { %>
+            <tr>
+              <td><%= item.nom %></td>
+              <td class="text-right"><%= item.prix_vente.toFixed(2) %></td>
+              <td class="text-right"><%= item.quantite %></td>
+              <td class="text-right"><%= item.subtotal.toFixed(2) %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <div class="total-section">
+        <div class="total-summary">
+          <div class="summary-item">
+            <span>Total HT:</span>
+            <span><%= vente.total_ht.toFixed(2) %></span>
+          </div>
+          <div class="summary-item">
+            <span>Taxe:</span>
+            <span><%= vente.tax.toFixed(2) %></span>
+          </div>
+          <div class="summary-item total">
+            <span>Total TTC:</span>
+            <span><%= vente.total_ttc.toFixed(2) %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Paiements</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Mode</th>
+            <th class="text-right">Montant</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (paiements && paiements.length > 0) { %>
+            <% paiements.forEach(p => { %>
+              <tr>
+                <td><%= new Date(p.date_paiement).toLocaleString('fr-FR') %></td>
+                <td><%= p.mode %></td>
+                <td class="text-right"><%= p.montant.toFixed(2) %></td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="3" style="text-align: center;">Aucun paiement enregistré.</td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+      <div class="total-section">
+        <div class="total-summary">
+          <div class="summary-item">
+            <span>Total Payé:</span>
+            <span><%= vente.montant_paye.toFixed(2) %></span>
+          </div>
+          <div class="summary-item total" style="color: <%= vente.reste > 0 ? 'var(--warning-color)' : 'var(--success-color)' %>;">
+            <span>Reste à payer:</span>
+            <span><%= vente.reste.toFixed(2) %></span>
+          </div>
+        </div>
+      </div>
+
+      <% if (vente.reste > 0) { %>
+        <form action="/ventes/<%= vente.id_vente %>/paiement" method="POST" class="payment-form">
+          <div class="form-group">
+            <label for="montant">Ajouter un paiement</label>
+            <input type="number" id="montant" name="montant" step="0.01" placeholder="0.00" required>
+          </div>
+          <div class="form-group">
+            <label for="mode">Mode de paiement</label>
+            <input type="text" id="mode" name="mode" value="cash">
+          </div>
+          <button type="submit" class="btn">Ajouter</button>
+        </form>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Liste des Fournisseurs</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    .sidebar {
+      width: 280px;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px 0;
+      box-shadow: var(--box-shadow);
+      z-index: 100;
+      transition: var(--transition);
+      overflow-y: auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      margin-left: 10px;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+
+    .nav-section {
+      margin-bottom: 30px;
+    }
+
+    .nav-section h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 20px;
+      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-item.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-icon {
+      margin-right: 12px;
+      font-size: 1.2rem;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: var(--secondary-color);
+      font-size: 1.8rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      transition: var(--transition);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-icon {
+      margin-right: 8px;
+    }
+
+    .btn-warning {
+      background-color: var(--warning-color);
+    }
+
+    .btn-warning:hover {
+      background-color: #e67e22;
+    }
+
+    .btn-danger {
+      background-color: var(--accent-color);
+    }
+
+    .btn-danger:hover {
+      background-color: #c0392b;
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+
+    .table-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background-color: var(--light-color);
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--dark-color);
+      border-bottom: 1px solid #ddd;
+    }
+
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background-color: rgba(52, 152, 219, 0.05);
+    }
+
+    .country-flag {
+      margin-right: 8px;
+    }
+
+    .actions-cell {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    /* Modal de confirmation */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 15% auto;
+      padding: 30px;
+      border-radius: var(--border-radius);
+      width: 90%;
+      max-width: 500px;
+      box-shadow: var(--box-shadow);
+    }
+
+    .modal-title {
+      color: var(--accent-color);
+      margin-bottom: 15px;
+      font-size: 1.3rem;
+    }
+
+    .modal-text {
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+
+    /* Modal de modification */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: var(--dark-color);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        height: auto;
+      }
+      
+      .nav-items {
+        display: flex;
+        overflow-x: auto;
+      }
+      
+      .nav-section {
+        margin-bottom: 0;
+        min-width: max-content;
+      }
+      
+      .nav-section h2 {
+        display: none;
+      }
+
+      .actions-cell {
+        flex-direction: column;
+      }
+
+      .modal-content {
+        margin: 20% auto;
+        width: 95%;
+      }
+
+      .modal-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">🏭</span>
+      <h1>Gestion Fournisseurs</h1>
+    </div>
+    
+    <div class="nav-section">
+      <h2>Navigation</h2>
+      <a href="/" class="nav-item ">
+        <span class="nav-icon">🏠</span>
+        <span>Tableau de Bord</span>
+      </a>
+      <a href="/fournisseurs" class="nav-item active">
+        <span class="nav-icon">📋</span>
+        <span>Liste des Fournisseurs</span>
+      </a>
+      <a href="/fournisseurs/inscription" class="nav-item">
+        <span class="nav-icon">➕</span>
+        <span>Nouveau Fournisseur</span>
+      </a>
+      <a href="/clients" class="nav-item">
+        <span class="nav-icon">👥</span>
+        <span>Gestion Clients</span>
+      </a>
+    </div>
+  </div>
+  
+  <div class="main-content">
+    <div class="header">
+      <h1>Liste des Fournisseurs</h1>
+      <a href="/fournisseurs/inscription" class="btn">
+        <span class="btn-icon">➕</span>
+        Nouveau Fournisseur
+      </a>
+    </div>
+    
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Téléphone</th>
+            <th>Email</th>
+            <th>Pays</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if (fournisseurs && fournisseurs.length > 0) { %>
+            <% fournisseurs.forEach(fournisseur => { %>
+              <tr>
+                <td><%= fournisseur.id_fournisseur %></td>
+                <td><%= fournisseur.nom %></td>
+                <td><%= fournisseur.telephone %></td>
+                <td><%= fournisseur.email %></td>
+                <td>
+                  <span class="country-flag">
+                    <% 
+                      const flags = {
+                        'France': '🇫🇷',
+                        'Belgique': '🇧🇪', 
+                        'Suisse': '🇨🇭',
+                        'Allemagne': '🇩🇪',
+                        'Espagne': '🇪🇸',
+                        'Italie': '🇮🇹'
+                      };
+                    %>
+                    <%= flags[fournisseur.pays] || '🌍' %>
+                  </span>
+                  <%= fournisseur.pays %>
+                </td>
+                <td class="actions-cell">
+                  <button data-fournisseur='<%= JSON.stringify(fournisseur) %>' 
+                          class="btn btn-warning btn-small edit-btn">
+                    <span class="btn-icon">✏️</span>
+                    Modifier
+                  </button>
+                  <button data-id="<%= fournisseur.id_fournisseur %>" data-nom="<%= fournisseur.nom.replace(/'/g, `\\'`) %>"
+                          class="btn btn-danger btn-small delete-btn">
+                    <span class="btn-icon">🗑️</span>
+                    Supprimer
+                  </button>
+                </td>
+              </tr>
+            <% }) %>
+          <% } else { %>
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 40px;">
+                Aucun fournisseur trouvé. 
+                <a href="/fournisseurs/inscription" style="color: var(--primary-color); text-decoration: none;">
+                  Ajoutez le premier fournisseur
+                </a>
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal de modification -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <h3 class="modal-title">Modifier le fournisseur</h3>
+      
+      <form id="editForm" method="POST">
+        <div class="form-group">
+          <label class="form-label">Nom</label>
+          <input type="text" name="nom" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Téléphone</label>
+          <input type="text" name="telephone" class="form-input" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" name="email" class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pays</label>
+          <select name="pays" class="form-input" required>
+            <option value="">Sélectionnez un pays</option>
+            <option value="France">🇫🇷 France</option>
+            <option value="Belgique">🇧🇪 Belgique</option>
+            <option value="Suisse">🇨🇭 Suisse</option>
+            <option value="Allemagne">🇩🇪 Allemagne</option>
+            <option value="Espagne">🇪🇸 Espagne</option>
+            <option value="Italie">🇮🇹 Italie</option>
+            <option value="Autre">🌍 Autre</option>
+          </select>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" onclick="closeEditModal()" class="btn btn-secondary">
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-warning">
+            <span class="btn-icon">💾</span>
+            Enregistrer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de confirmation de suppression -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h3 class="modal-title">Confirmer la suppression</h3>
+      <p class="modal-text" id="deleteModalText">
+        <!-- Le texte sera inséré dynamiquement -->
+      </p>
+      <div class="modal-actions">
+        <button onclick="closeDeleteModal()" class="btn btn-secondary">
+          Annuler
+        </button>
+        <form id="deleteForm" method="POST" style="display: inline;">
+          <button type="submit" class="btn btn-danger">
+            <span class="btn-icon">🗑️</span>
+            Supprimer définitivement
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editModal = document.getElementById('editModal');
+    const deleteModal = document.getElementById('deleteModal');
+    const editForm = document.getElementById('editForm');
+    const deleteForm = document.getElementById('deleteForm');
+    const deleteModalText = document.getElementById('deleteModalText');
+
+    // --- Gestion du Modal de Modification ---
+
+    // Ouvrir le modal de modification
+    document.querySelectorAll('.edit-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const fournisseur = JSON.parse(this.getAttribute('data-fournisseur'));
+            
+            // Définir l'action du formulaire
+            editForm.action = `/fournisseurs/modifier/${fournisseur.id_fournisseur}`;
+            
+            // Remplir les champs du formulaire
+            editForm.nom.value = fournisseur.nom || '';
+            editForm.telephone.value = fournisseur.telephone || '';
+            editForm.email.value = fournisseur.email || '';
+            editForm.pays.value = fournisseur.pays || '';
+            
+            // Afficher le modal
+            editModal.style.display = 'block';
+        });
+    });
+
+    // Fermer le modal de modification
+    function closeEditModal() {
+        editModal.style.display = 'none';
+    }
+    // Le bouton "Annuler" dans le modal de modification
+    editModal.querySelector('.btn-secondary').addEventListener('click', closeEditModal);
+
+
+    // --- Gestion du Modal de Suppression ---
+
+    // Ouvrir le modal de suppression
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const nom = this.getAttribute('data-nom');
+            
+            // Mettre à jour le texte et l'action du formulaire
+            deleteModalText.innerHTML = `Êtes-vous sûr de vouloir supprimer le fournisseur <strong>"${nom}"</strong> ?<br><br>Cette action est irréversible.`;
+            deleteForm.action = `/fournisseurs/supprimer/${id}?_method=DELETE`;
+            
+            // Afficher le modal
+            deleteModal.style.display = 'block';
+        });
+    });
+    
+    // Fermer le modal de suppression
+    function closeDeleteModal() {
+        deleteModal.style.display = 'none';
+    }
+    // Le bouton "Annuler" dans le modal de suppression
+    deleteModal.querySelector('.btn-secondary').addEventListener('click', closeDeleteModal);
+
+
+    // --- Gestion Générale des Modals ---
+
+    // Fermer les modals en cliquant en dehors de leur contenu
+    window.addEventListener('click', function(event) {
+        if (event.target === editModal) {
+            closeEditModal();
+        }
+        if (event.target === deleteModal) {
+            closeDeleteModal();
+        }
+    });
+
+    // Correction pour la route de suppression avec method-override
+    // Le formulaire POST simple est suffisant si method-override est bien configuré
+    // J'ai ajouté `?_method=DELETE` à l'action du formulaire de suppression
+    // pour être compatible avec la configuration de `app.js` que j'ai faite pour les clients.
+    // Je vais vérifier si la route pour les fournisseurs est bien en DELETE ou en POST.
+    // D'après le fichier routes/fournisseurs.js, c'est un POST. Donc je vais ajuster.
+    
+    const deleteRouteIsPost = true; // Basé sur le fichier de routes
+    
+    document.querySelectorAll('.delete-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const nom = this.getAttribute('data-nom');
+            
+            deleteModalText.innerHTML = `Êtes-vous sûr de vouloir supprimer le fournisseur <strong>"${nom}"</strong> ?<br><br>Cette action est irréversible.`;
+            
+            if(deleteRouteIsPost) {
+                 deleteForm.action = `/fournisseurs/supprimer/${id}`;
+                 // Assurez-vous que la méthode est POST et qu'il n'y a pas de _method=DELETE si la route est POST
+                 const methodOverrideInput = deleteForm.querySelector('input[name="_method"]');
+                 if(methodOverrideInput) methodOverrideInput.remove();
+            } else {
+                 deleteForm.action = `/fournisseurs/supprimer/${id}?_method=DELETE`;
+            }
+            
+            deleteModal.style.display = 'block';
+        });
+    });
+
+});
+</script>
+</body>
+</html>
