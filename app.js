@@ -3,11 +3,19 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from 'url';
 import methodOverride from 'method-override';
+import session from 'express-session';
+import passport from 'passport';
+import LocalStrategy from 'passport-local';
+import bcrypt from 'bcryptjs';
+import { findUserByUsername, findUserById } from './models/userModel.js';
 import clientsRoutes from "./routes/clients.js";
 import fournisseursRoutes from "./routes/fournisseurs.js";
 import produitsRoutes from "./routes/produits.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import ventesRoutes from "./routes/ventes.js";
+import authRoutes from './routes/auth.js';
+import flash from 'connect-flash';
+
 
 
 const app = express();
@@ -21,6 +29,56 @@ const __dirname = path.dirname(__filename);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
+app.use(session({
+    secret: 'secret', // Change this to a random string
+    resave: false,
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+
+// Middleware to pass flash messages to views
+app.use((req, res, next) => {
+    res.locals.success_msg = req.flash('success_msg');
+    res.locals.error_msg = req.flash('error_msg');
+    res.locals.error = req.flash('error');
+    next();
+});
+
+
+// Passport configuration
+passport.use(new LocalStrategy(
+    async (username, password, done) => {
+        try {
+            const user = await findUserByUsername(username);
+            if (!user) {
+                return done(null, false, { message: 'Incorrect username.' });
+            }
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) {
+                return done(null, false, { message: 'Incorrect password.' });
+            }
+            return done(null, user);
+        } catch (err) {
+            return done(err);
+        }
+    }
+));
+
+passport.serializeUser((user, done) => {
+    done(null, user.id);
+});
+
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await findUserById(id);
+        done(null, user);
+    } catch (err) {
+        done(err);
+    }
+});
+
 
 // Servir les fichiers statiques
 app.use(express.static(path.join(__dirname, 'public')));
@@ -28,6 +86,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Vue EJS
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+// Routes
+app.use('/auth', authRoutes);
+
+// Middleware to protect routes
+app.use((req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    res.redirect('/auth/login');
+});
 
 // Route racine - Redirection vers le dashboard
 app.get("/", (req, res) => {
