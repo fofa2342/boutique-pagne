@@ -14,6 +14,7 @@ import produitsRoutes from "./routes/produits.js";
 import dashboardRoutes from "./routes/dashboard.js";
 import ventesRoutes from "./routes/ventes.js";
 import authRoutes from './routes/auth.js';
+import adminRoutes from './routes/admin.js';
 import flash from 'connect-flash';
 import { isAuthenticated, authorizeRoles } from './middleware/authMiddleware.js';
 
@@ -60,6 +61,9 @@ passport.use(new LocalStrategy(
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
                 return done(null, false, { message: 'Incorrect password.' });
+            }
+            if (user.status !== 'active') {
+                return done(null, false, { message: 'Your account is pending approval from an administrator.' });
             }
             return done(null, user);
         } catch (err) {
@@ -113,6 +117,8 @@ app.use("/clients", isAuthenticated, authorizeRoles('admin'), clientsRoutes);
 app.use("/fournisseurs", isAuthenticated, authorizeRoles('admin'), fournisseursRoutes);
 
 app.use("/produits", isAuthenticated, authorizeRoles('admin'), produitsRoutes);
+
+app.use("/admin", isAuthenticated, authorizeRoles('admin'), adminRoutes);
 
 app.use("/ventes", isAuthenticated, ventesRoutes);
 

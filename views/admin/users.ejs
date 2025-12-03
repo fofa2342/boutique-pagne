@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestion des Utilisateurs</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2c3e50;
+      --accent-color: #e74c3c;
+      --light-color: #ecf0f1;
+      --dark-color: #34495e;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      display: flex;
+      min-height: 100vh;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    .sidebar {
+      width: 280px;
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 20px 0;
+      box-shadow: var(--box-shadow);
+      z-index: 100;
+      transition: var(--transition);
+      overflow-y: auto;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      padding: 0 20px 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .logo h1 {
+      font-size: 1.5rem;
+      margin-left: 10px;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+    }
+
+    .nav-section {
+      margin-bottom: 30px;
+    }
+
+    .nav-section h2 {
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 20px;
+      margin-bottom: 15px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: var(--transition);
+      border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-item.active {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-left-color: var(--primary-color);
+    }
+
+    .nav-icon {
+      margin-right: 12px;
+      font-size: 1.2rem;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      color: var(--secondary-color);
+      font-size: 2rem;
+    }
+
+    /* Table Styles */
+    .table-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background-color: var(--light-color);
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--dark-color);
+      border-bottom: 1px solid #ddd;
+    }
+
+    td {
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover {
+      background-color: rgba(52, 152, 219, 0.05);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .bg-success { background-color: #d4edda; color: #155724; }
+    .bg-warning { background-color: #fff3cd; color: #856404; }
+    .bg-secondary { background-color: #e2e3e5; color: #383d41; }
+
+    .btn {
+      padding: 6px 12px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      color: white;
+    }
+
+    .btn-success { background-color: var(--success-color); }
+    .btn-warning { background-color: var(--warning-color); color: #333; }
+    .btn-info { background-color: var(--primary-color); }
+    
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .alert {
+      padding: 15px;
+      margin-bottom: 20px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+    }
+    .alert-success { background-color: #d4edda; border-color: #c3e6cb; color: #155724; }
+    .alert-danger { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+    .alert-warning { background-color: #fff3cd; border-color: #ffeeba; color: #856404; }
+    
+    .btn-close {
+      float: right;
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1;
+      color: #000;
+      text-shadow: 0 1px 0 #fff;
+      opacity: .5;
+      background: transparent;
+      border: 0;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="logo">
+      <span class="logo-icon">📊</span>
+      <h1>Gestion Commerciale</h1>
+    </div>
+    
+    <div class="nav-section">
+      <h2>Navigation Principale</h2>
+      <a href="/dashboard" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span>Tableau de Bord</span>
+      </a>
+      <% if (user && (user.role === 'admin' || user.role === 'superadmin')) { %>
+        <a href="/produits" class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Produits</span>
+        </a>
+        <a href="/clients" class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span>Clients</span>
+        </a>
+        <a href="/fournisseurs" class="nav-item">
+          <span class="nav-icon">🏭</span>
+          <span>Fournisseurs</span>
+        </a>
+        <a href="/admin/users" class="nav-item active">
+          <span class="nav-icon">👤</span>
+          <span>Utilisateurs</span>
+        </a>
+      <% } %>
+    </div>
+
+    <!-- Section Mouvements de Stock -->
+    <div class="nav-section">
+      <h2>Mouvements de Stock</h2>
+      <a href="/produits/mouvements/entrees" class="nav-item">
+        <span class="nav-icon">📥</span>
+        <span>Liste des Entrées</span>
+      </a>
+    </div>
+
+    <!-- Section Ventes -->
+    <div class="nav-section">
+      <h2>Ventes</h2>
+      <a href="/ventes" class="nav-item">
+        <span class="nav-icon">🛒</span>
+        <span>Liste des Ventes</span>
+      </a>
+      <a href="/ventes/nouveau" class="nav-item">
+        <span class="nav-icon">➕</span>
+        <span>Nouvelle Vente</span>
+      </a>
+      <a href="/auth/logout" class="nav-item">
+        <span class="nav-icon">🔐</span>
+        <span>Déconnexion</span>
+      </a>
+    </div>
+  </div>
+  
+  <!-- Main Content -->
+  <div class="main-content">
+    <div class="header">
+      <h1>Gestion des Utilisateurs</h1>
+    </div>
+
+    <%- include('../partials/messages') %>
+
+    <div class="table-container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Utilisateur</th>
+                    <th>Rôle</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(u => { %>
+                    <tr>
+                        <td><%= u.username %></td>
+                        <td><%= u.role %></td>
+                        <td>
+                            <span class="badge 
+                                <%= u.status === 'active' ? 'bg-success' : '' %>
+                                <%= u.status === 'pending' ? 'bg-warning' : '' %>
+                                <%= u.status === 'inactive' ? 'bg-secondary' : '' %>
+                            ">
+                                <%= u.status %>
+                            </span>
+                        </td>
+                        <td>
+                            <% if (u.role === 'superadmin') { %>
+                                <span class="badge bg-success" style="background-color: #2c3e50 !important; color: #ecf0f1;">Super Admin</span>
+                            <% } else { %>
+                                <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                    <% if (u.status === 'pending') { %>
+                                        <form action="/admin/users/<%= u.id %>/approve?_method=POST" method="POST" style="display: inline;">
+                                            <button type="submit" class="btn btn-success">Approuver</button>
+                                        </form>
+                                    <% } else if (u.status === 'active') { %>
+                                        <form action="/admin/users/<%= u.id %>/suspend?_method=POST" method="POST" style="display: inline;">
+                                            <button type="submit" class="btn btn-warning">Suspendre</button>
+                                        </form>
+                                    <% } else if (u.status === 'inactive') { %>
+                                        <form action="/admin/users/<%= u.id %>/approve?_method=POST" method="POST" style="display: inline;">
+                                            <button type="submit" class="btn btn-info">Réactiver</button>
+                                        </form>
+                                    <% } %>
+
+                                    <% if (u.role === 'user') { %>
+                                        <form action="/admin/users/<%= u.id %>/promote?_method=POST" method="POST" style="display: inline;">
+                                            <button type="submit" class="btn btn-primary" style="background-color: #6c5ce7;">Promouvoir Admin</button>
+                                        </form>
+                                    <% } else if (u.role === 'admin' && u.id !== user.id) { %>
+                                        <form action="/admin/users/<%= u.id %>/demote?_method=POST" method="POST" style="display: inline;">
+                                            <button type="submit" class="btn btn-secondary">Rétrograder</button>
+                                        </form>
+                                    <% } %>
+                                </div>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+  </div>
+</body>
+</html>

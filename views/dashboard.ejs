@@ -360,7 +360,7 @@
         <span class="nav-icon">📊</span>
         <span>Tableau de Bord</span>
       </a>
-      <% if (user && user.role === 'admin') { %>
+      <% if (user && (user.role === 'admin' || user.role === 'superadmin')) { %>
         <a href="/produits" class="nav-item">
           <span class="nav-icon">📦</span>
           <span>Produits</span>
@@ -372,6 +372,10 @@
         <a href="/fournisseurs" class="nav-item">
           <span class="nav-icon">🏭</span>
           <span>Fournisseurs</span>
+        </a>
+        <a href="/admin/users" class="nav-item">
+          <span class="nav-icon">👤</span>
+          <span>Utilisateurs</span>
         </a>
       <% } %>
     </div>

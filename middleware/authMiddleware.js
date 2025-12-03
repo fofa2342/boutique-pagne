@@ -13,6 +13,10 @@ export const authorizeRoles = (...roles) => {
         if (!req.user) {
             return res.redirect('/auth/login');
         }
+        // 'superadmin' role bypasses all role checks
+        if (req.user.role === 'superadmin') {
+            return next();
+        }
         if (!roles.includes(req.user.role)) {
             req.flash('error_msg', 'Vous n\'êtes pas autorisé à accéder à cette ressource.');
             return res.status(403).redirect('/dashboard'); // Or another appropriate redirect

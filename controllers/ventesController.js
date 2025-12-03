@@ -307,9 +307,16 @@ export async function ajouterPaiement(req, res) {
       return res.status(404).send("Vente non trouvée");
     }
 
+    const reste = Math.max(0, parseFloat(vente.total_ttc) - parseFloat(vente.montant_paye));
+    const montantFloat = parseFloat(montant);
+
+    if (montantFloat > reste) {
+      return res.status(400).send(`Le montant du paiement (${montantFloat}) dépasse le reste à payer (${reste}).`);
+    }
+
     await addPaiement({
       vente_id: id,
-      montant: parseFloat(montant),
+      montant: montantFloat,
       mode: mode || "cash",
       date_paiement: new Date()
     });
