@@ -327,6 +327,11 @@
                                             <button type="submit" class="btn btn-secondary">Rétrograder</button>
                                         </form>
                                     <% } %>
+                                    <% if (u.role !== 'superadmin' && u.id !== user.id && (u.role !== 'admin' || user.role === 'superadmin')) { %>
+                                        <form action="/admin/users/<%= u.id %>/delete?_method=DELETE" method="POST" onsubmit="return confirm('etes-vous sur ?');" style="display: inline;">
+                                            <button type="submit" class="btn btn-danger" style="background-color: #e74c3c;">Supprimer</button>
+                                        </form>
+                                    <% } %>
                                 </div>
                             <% } %>
                         </td>

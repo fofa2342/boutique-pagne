@@ -43,3 +43,8 @@ export async function updateUserRole(id, role) {
   );
   return result.affectedRows;
 }
+
+export async function deleteUser(id) {
+  const [result] = await pool.execute('DELETE FROM users WHERE id = ?', [id]);
+  return result.affectedRows;
+}

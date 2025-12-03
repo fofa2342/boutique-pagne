@@ -1,5 +1,5 @@
 // controllers/adminController.js
-import { getAllUsers, updateUserStatus, updateUserRole, findUserById } from '../models/userModel.js';
+import { getAllUsers, updateUserStatus, updateUserRole, findUserById, deleteUser as deleteUserModel } from '../models/userModel.js';
 
 export const renderUserManagement = async (req, res) => {
   try {
@@ -84,6 +84,42 @@ export const demoteUser = async (req, res) => {
     } catch (error) {
         console.error(error);
         req.flash('error_msg', 'Failed to demote user.');
+        res.redirect('/admin/users');
+    }
+};
+
+export const deleteUser = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const userToDelete = await findUserById(id);
+
+        if (!userToDelete) {
+            req.flash('error_msg', 'User not found.');
+            return res.redirect('/admin/users');
+        }
+
+        if (userToDelete.role === 'superadmin') {
+            req.flash('error_msg', 'Cannot delete Superadmin.');
+            return res.redirect('/admin/users');
+        }
+
+        if (req.user.id == id) {
+             req.flash('error_msg', 'You cannot delete your own account.');
+             return res.redirect('/admin/users');
+        }
+
+        if (userToDelete.role === 'admin' && req.user.role !== 'superadmin') {
+            req.flash('error_msg', 'Only Superadmin can delete Administrators.');
+            return res.redirect('/admin/users');
+        }
+
+        await deleteUserModel(id);
+        req.flash('success_msg', 'User deleted successfully.');
+        res.redirect('/admin/users');
+
+    } catch (error) {
+        console.error(error);
+        req.flash('error_msg', 'Failed to delete user.');
         res.redirect('/admin/users');
     }
 };
