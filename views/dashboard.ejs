@@ -360,18 +360,20 @@
         <span class="nav-icon">📊</span>
         <span>Tableau de Bord</span>
       </a>
-      <a href="/produits" class="nav-item">
-        <span class="nav-icon">📦</span>
-        <span>Produits</span>
-      </a>
-      <a href="/clients" class="nav-item">
-        <span class="nav-icon">👥</span>
-        <span>Clients</span>
-      </a>
-      <a href="/fournisseurs" class="nav-item">
-        <span class="nav-icon">🏭</span>
-        <span>Fournisseurs</span>
-      </a>
+      <% if (user && user.role === 'admin') { %>
+        <a href="/produits" class="nav-item">
+          <span class="nav-icon">📦</span>
+          <span>Produits</span>
+        </a>
+        <a href="/clients" class="nav-item">
+          <span class="nav-icon">👥</span>
+          <span>Clients</span>
+        </a>
+        <a href="/fournisseurs" class="nav-item">
+          <span class="nav-icon">🏭</span>
+          <span>Fournisseurs</span>
+        </a>
+      <% } %>
     </div>
 
     <!-- NOUVEAU: Section Mouvements de Stock -->

@@ -15,6 +15,7 @@ import dashboardRoutes from "./routes/dashboard.js";
 import ventesRoutes from "./routes/ventes.js";
 import authRoutes from './routes/auth.js';
 import flash from 'connect-flash';
+import { isAuthenticated, authorizeRoles } from './middleware/authMiddleware.js';
 
 
 
@@ -43,6 +44,7 @@ app.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
+    res.locals.user = req.user || null; // Make user object available in templates
     next();
 });
 
@@ -73,7 +75,12 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser(async (id, done) => {
     try {
         const user = await findUserById(id);
-        done(null, user);
+        if (user) {
+            done(null, user);
+            // Store user in session and make available to views
+        } else {
+            done(null, false);
+        }
     } catch (err) {
         done(err);
     }
@@ -88,27 +95,26 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Routes
+
 app.use('/auth', authRoutes);
 
-// Middleware to protect routes
-app.use((req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.redirect('/auth/login');
-});
-
 // Route racine - Redirection vers le dashboard
-app.get("/", (req, res) => {
+app.get("/", isAuthenticated, (req, res) => {
   res.redirect("/dashboard"); // ← Redirection simple
 });
 
-// Routes
-app.use("/dashboard", dashboardRoutes);
-app.use("/clients", clientsRoutes);
-app.use("/fournisseurs", fournisseursRoutes);
-app.use("/produits", produitsRoutes);
-app.use("/ventes", ventesRoutes);
+
+// Apply isAuthenticated to all main application routes
+
+app.use("/dashboard", isAuthenticated, dashboardRoutes);
+
+app.use("/clients", isAuthenticated, authorizeRoles('admin'), clientsRoutes);
+
+app.use("/fournisseurs", isAuthenticated, authorizeRoles('admin'), fournisseursRoutes);
+
+app.use("/produits", isAuthenticated, authorizeRoles('admin'), produitsRoutes);
+
+app.use("/ventes", isAuthenticated, ventesRoutes);
 
 // Route 404 simple
 app.use((req, res) => {

@@ -16,7 +16,6 @@ import {
   historiqueProduit,
   modifierProduit,
   supprimerProduit,
-  // Nouveaux imports
   listeEntrees,
   listeSorties,
   showModifierMouvement,
@@ -26,7 +25,7 @@ import {
 
 const router = express.Router();
 
-/* --- NOUVEAU : Routes pour les mouvements de stock --- */
+// Routes pour les mouvements de stock
 router.get("/mouvements/entrees", listeEntrees);
 router.get("/mouvements/sorties", listeSorties);
 router.get("/mouvements/modifier/:id", showModifierMouvement);
