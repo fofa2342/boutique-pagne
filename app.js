@@ -17,8 +17,10 @@ import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
 import flash from 'connect-flash';
 import { isAuthenticated, authorizeRoles } from './middleware/authMiddleware.js';
+import pool from './config/db.js';
+import expressMySQLSession from 'express-mysql-session';
 
-
+const MySQLStore = expressMySQLSession(session);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,10 +33,14 @@ const __dirname = path.dirname(__filename);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
+
+const sessionStore = new MySQLStore({}, pool);
+
 app.use(session({
     secret: 'secret', // Change this to a random string
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    store: sessionStore
 }));
 app.use(passport.initialize());
 app.use(passport.session());
