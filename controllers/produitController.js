@@ -1,4 +1,5 @@
 // controllers/produitController.js
+import logger from '../config/logger.js';
 import { getAllFournisseurs } from "../models/fournisseurModel.js";
 import { 
   createProduit, 
@@ -16,6 +17,7 @@ import {
   deleteMouvement,
   getMouvementsFiltered
 } from "../models/produitModel.js";
+import { escapeHtml } from "../utils/escapeHtml.js";
 
 
 // Page principale produits
@@ -24,7 +26,7 @@ export async function listeProduits(req, res) {
     const produits = await getAllProduits();
     res.render("produits", { produits });
   } catch (error) {
-    console.error("Erreur liste produits:", error);
+    logger.error("Erreur liste produits:", error);
     res.status(500).send("Erreur lors de la récupération des produits");
   }
 }
@@ -56,7 +58,7 @@ export async function ajouterProduit(req, res) {
       message: `Produit créé avec succès ! ID: ${produitId}` 
     });
   } catch (error) {
-    console.error("Erreur ajout produit:", error);
+    logger.error("Erreur ajout produit:", error);
     res.status(500).send("Erreur lors de la création du produit");
   }
 }
@@ -73,7 +75,7 @@ export async function entreeStock(req, res) {
       message: req.query.message || null
     });
   } catch (error) {
-    console.error("Erreur entrée stock:", error);
+    logger.error("Erreur entrée stock:", error);
     res.status(500).send("Erreur lors de la récupération des produits");
   }
 }
@@ -110,15 +112,19 @@ export async function traiterEntreeStock(req, res) {
       prix_achat: prix_achat || produit.prix_achat
     });
 
+    const safeProduitNom = escapeHtml(produit.nom);
+    const safeFournisseurNom = escapeHtml(fournisseur_nom);
+    const safeRaison = escapeHtml(raison || 'Non spécifiée');
+
     res.render("successProduit", { 
-      message: `✅ Entrée de stock réussie !<br><br>
-                <strong>${quantite}</strong> unités ajoutées à <strong>${produit.nom}</strong><br>
-                📊 Stock avant: <strong>${ancienStock}</strong> → Stock après: <strong>${nouvelleQuantite}</strong><br>
-                🏭 Fournisseur: <strong>${fournisseur_nom}</strong><br>
-                📝 Raison: <strong>${raison || 'Non spécifiée'}</strong>`
+      message: `Entrée de stock réussie !<br><br>
+                <strong>${escapeHtml(quantite)}</strong> unités ajoutées à <strong>${safeProduitNom}</strong><br>
+                Stock avant: <strong>${ancienStock}</strong> → Stock après: <strong>${nouvelleQuantite}</strong><br>
+                Fournisseur: <strong>${safeFournisseurNom}</strong><br>
+                Raison: <strong>${safeRaison}</strong>`
     });
   } catch (error) {
-    console.error("Erreur traitement entrée:", error);
+    logger.error("Erreur traitement entrée:", error);
     res.status(500).send("Erreur lors de l'entrée de stock: " + error.message);
   }
 }
@@ -129,7 +135,7 @@ export async function entreeStockMultiple(req, res) {
     const produits = await getAllProduits();
     res.render("entreeStockMultiple", { produits });
   } catch (error) {
-    console.error("Erreur entrée multiple:", error);
+    logger.error("Erreur entrée multiple:", error);
     res.status(500).send("Erreur lors de la récupération des produits");
   }
 }
@@ -144,7 +150,7 @@ export async function traiterEntreeStockMultiple(req, res) {
     }
 
     let mouvementsReussis = 0;
-    let message = "✅ Entrées de stock effectuées :<br><br><ul style='text-align: left;'>";
+    let message = "Entrées de stock effectuées :<br><br><ul style='text-align: left;'>";
     
     // Si produits est un tableau
     if (Array.isArray(produits)) {
@@ -165,15 +171,15 @@ export async function traiterEntreeStockMultiple(req, res) {
               notes
             });
             
-            message += `<li>📦 <strong>${produitData.quantite}</strong> unités de <strong>${produit.nom}</strong> (Stock: ${ancienStock} → ${nouvelleQuantite})</li>`;
+            message += `<li><strong>${escapeHtml(produitData.quantite)}</strong> unités de <strong>${escapeHtml(produit.nom)}</strong> (Stock: ${ancienStock} → ${nouvelleQuantite})</li>`;
             mouvementsReussis++;
           }
         }
       }
     }
     
-    message += `</ul><br>🏭 Fournisseur: <strong>${fournisseur_nom}</strong><br>`;
-    message += `📊 Total: <strong>${mouvementsReussis}</strong> produit(s) mis à jour`;
+    message += `</ul><br>Fournisseur: <strong>${escapeHtml(fournisseur_nom)}</strong><br>`;
+    message += `Total: <strong>${mouvementsReussis}</strong> produit(s) mis à jour`;
     
     if (mouvementsReussis === 0) {
       return res.status(400).send("Aucun produit valide sélectionné !");
@@ -181,7 +187,7 @@ export async function traiterEntreeStockMultiple(req, res) {
     
     res.render("successProduit", { message });
   } catch (error) {
-    console.error("Erreur traitement entrée multiple:", error);
+    logger.error("Erreur traitement entrée multiple:", error);
     res.status(500).send("Erreur lors des entrées de stock: " + error.message);
   }
 }
@@ -192,7 +198,7 @@ export async function sortieStock(req, res) {
     const produits = await getAllProduits();
     res.render("sortieStock", { produits });
   } catch (error) {
-    console.error("Erreur sortie stock:", error);
+    logger.error("Erreur sortie stock:", error);
     res.status(500).send("Erreur lors de la récupération des produits");
   }
 }
@@ -226,15 +232,18 @@ export async function traiterSortieStock(req, res) {
       raison,
       notes
     });
+
+    const safeProduitNom = escapeHtml(produit.nom);
+    const safeRaison = escapeHtml(raison || 'Non spécifiée');
     
     res.render("successProduit", { 
-      message: `✅ Sortie de stock effectuée !<br><br>
-                <strong>${quantite}</strong> unités retirées de <strong>${produit.nom}</strong><br>
-                📊 Stock avant: <strong>${ancienStock}</strong> → Stock après: <strong>${nouvelleQuantite}</strong><br>
-                📝 Raison: <strong>${raison || 'Non spécifiée'}</strong>`
+      message: `Sortie de stock effectuée !<br><br>
+                <strong>${escapeHtml(quantite)}</strong> unités retirées de <strong>${safeProduitNom}</strong><br>
+                Stock avant: <strong>${ancienStock}</strong> → Stock après: <strong>${nouvelleQuantite}</strong><br>
+                Raison: <strong>${safeRaison}</strong>`
     });
   } catch (error) {
-    console.error("Erreur traitement sortie:", error);
+    logger.error("Erreur traitement sortie:", error);
     res.status(500).send("Erreur lors de la sortie de stock: " + error.message);
   }
 }
@@ -242,25 +251,11 @@ export async function traiterSortieStock(req, res) {
 // Historique des mouvements
 export async function historiqueMouvements(req, res) {
   try {
-    const mouvements = await getMouvementsStock();
-    
-    // Enrichir les mouvements avec les noms des produits
-    const mouvementsAvecDetails = await Promise.all(
-      mouvements.map(async (mouvement) => {
-        const produit = await getProduitById(mouvement.produit_id);
-        return {
-          ...mouvement,
-          produit_nom: produit ? produit.nom : 'Produit inconnu'
-        };
-      })
-    );
-    
-    // Trier par date décroissante
-    mouvementsAvecDetails.sort((a, b) => new Date(b.date_mouvement) - new Date(a.date_mouvement));
-    
-    res.render("historiqueMouvements", { mouvements: mouvementsAvecDetails });
+    // Legacy route: redirect to the dedicated movements list pages.
+    // This avoids rendering a missing template and keeps UX consistent.
+    res.redirect('/produits/mouvements/entrees');
   } catch (error) {
-    console.error("Erreur historique:", error);
+    logger.error("Erreur historique:", error);
     res.status(500).send("Erreur lors de la récupération de l'historique");
   }
 }
@@ -285,7 +280,7 @@ export async function historiqueProduit(req, res) {
       mouvements 
     });
   } catch (error) {
-    console.error("Erreur historique produit:", error);
+    logger.error("Erreur historique produit:", error);
     res.status(500).send("Erreur lors de la récupération de l'historique du produit");
   }
 }
@@ -296,7 +291,7 @@ export async function alertesStock(req, res) {
     const produitsAlerte = await getProduitsAlerte();
     res.render("alertesStock", { produits: produitsAlerte });
   } catch (error) {
-    console.error("Erreur alertes:", error);
+    logger.error("Erreur alertes:", error);
     res.status(500).send("Erreur lors de la récupération des alertes");
   }
 }
@@ -321,7 +316,7 @@ export async function ficheProduit(req, res) {
       derniersMouvements: derniersMouvementsLimites
     });
   } catch (error) {
-    console.error("Erreur fiche produit:", error);
+    logger.error("Erreur fiche produit:", error);
     res.status(500).send("Erreur lors de la récupération du produit");
   }
 }
@@ -332,7 +327,7 @@ export async function modifierProduit(req, res) {
     const { id } = req.params;
     const { nom, description, prix_achat, prix_vente, quantite_stock, seuil_alerte } = req.body;
     
-    console.log("📝 Données reçues pour modification:", req.body); // Debug
+    logger.info(" Données reçues pour modification:", req.body); // Debug
     
     // Validation basique
     if (!nom || !prix_achat || !prix_vente) {
@@ -348,12 +343,12 @@ export async function modifierProduit(req, res) {
       seuil_alerte: parseInt(seuil_alerte) || 5
     });
     
-    console.log("✅ Produit modifié avec succès, ID:", id);
+    logger.info(" Produit modifié avec succès, ID:", id);
     
     // Redirection vers la fiche produit mise à jour
     res.redirect(`/produits/${id}`);
   } catch (error) {
-    console.error("❌ Erreur modification produit:", error);
+    logger.error(" Erreur modification produit:", error);
     res.status(500).render("error", {
       message: "Erreur lors de la modification du produit: " + error.message
     });
@@ -380,7 +375,7 @@ export async function supprimerProduit(req, res) {
 
   } catch (error) {
 
-    console.error("Erreur suppression produit:", error);
+    logger.error("Erreur suppression produit:", error);
 
     res.status(500).send("Erreur lors de la suppression du produit");
 
@@ -432,7 +427,7 @@ export async function listeEntrees(req, res) {
 
   } catch (error) {
 
-    console.error("Erreur liste entrées:", error);
+    logger.error("Erreur liste entrées:", error);
 
     res.status(500).send("Erreur lors de la récupération des entrées");
 
@@ -480,7 +475,7 @@ export async function listeSorties(req, res) {
 
   } catch (error) {
 
-    console.error("Erreur liste sorties:", error);
+    logger.error("Erreur liste sorties:", error);
 
     res.status(500).send("Erreur lors de la récupération des sorties");
 
@@ -510,7 +505,7 @@ export async function showModifierMouvement(req, res) {
 
   } catch (error) {
 
-    console.error("Erreur affichage modif mouvement:", error);
+    logger.error("Erreur affichage modif mouvement:", error);
 
     res.status(500).send("Erreur lors de l'affichage du formulaire");
 
@@ -564,7 +559,7 @@ export async function modifierMouvement(req, res) {
 
   } catch (error) {
 
-    console.error("Erreur modif mouvement:", error);
+    logger.error("Erreur modif mouvement:", error);
 
     res.status(500).send("Erreur lors de la modification du mouvement");
 
@@ -612,7 +607,7 @@ export async function supprimerMouvement(req, res) {
 
   } catch (error) {
 
-    console.error("Erreur suppression mouvement:", error);
+    logger.error("Erreur suppression mouvement:", error);
 
     res.status(500).send("Erreur lors de la suppression du mouvement");
 

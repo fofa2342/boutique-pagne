@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Détails Fournisseur</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 40px; background: #f5f7fa; color: #2c3e50; }
+    .card { max-width: 720px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 24px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    h1 { margin: 0 0 12px; }
+    .row { margin: 8px 0; }
+    .label { font-weight: 700; }
+    a { display: inline-block; margin-top: 16px; padding: 10px 14px; border-radius: 6px; text-decoration: none; background: #3498db; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Détails fournisseur</h1>
+
+    <% if (!fournisseur) { %>
+      <p>Fournisseur introuvable.</p>
+    <% } else { %>
+      <div class="row"><span class="label">Nom:</span> <%= fournisseur.nom %></div>
+      <div class="row"><span class="label">Téléphone:</span> <%= fournisseur.telephone %></div>
+      <div class="row"><span class="label">Email:</span> <%= fournisseur.email || '—' %></div>
+      <div class="row"><span class="label">Pays:</span> <%= fournisseur.pays %></div>
+    <% } %>
+
+    <a href="/fournisseurs">Retour à la liste</a>
+  </div>
+</body>
+</html>

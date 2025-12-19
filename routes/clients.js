@@ -7,6 +7,7 @@ import {
   updateClientController,
   deleteClientController
 } from "../controllers/clientController.js";
+import { validateClient, validateId } from '../middleware/validators.js';
 
 const router = express.Router();
 
@@ -16,18 +17,18 @@ router.get("/inscription", (req, res) => {
 });
 
 // Traitement inscription
-router.post("/inscription", inscriptionClient);
+router.post("/inscription", validateClient, inscriptionClient);
 
 // Liste des clients
 router.get("/", listeClients);
 
 // Afficher le formulaire de modification
-router.get("/modifier/:id", showEditClientForm);
+router.get("/modifier/:id", validateId, showEditClientForm);
 
 // Traiter la mise à jour d'un client
-router.post("/modifier/:id", updateClientController);
+router.post("/modifier/:id", validateId, validateClient, updateClientController);
 
 // Supprimer un client
-router.delete("/supprimer/:id", deleteClientController);
+router.delete("/supprimer/:id", validateId, deleteClientController);
 
 export default router;

@@ -1,4 +1,7 @@
 import pool from "../config/db.js";
+import logger from '../config/logger.js';
+
+const DEBUG = process.env.NODE_ENV !== 'production';
 
 /* --------------------------- VENTE --------------------------- */
 
@@ -40,26 +43,31 @@ export async function addPaiement(paiement) {
     [vente_id, montant, mode]
   );
 
-  // 2. Récupérer les informations actuelles de la vente
+  // 2. Recalculer le total des paiements depuis la table paiement pour éviter les incohérences
+  // Cela agit comme une "source de vérité" unique
+  const [rows] = await pool.execute(
+    `SELECT SUM(montant) as total_paye FROM paiement WHERE vente_id = ?`,
+    [vente_id]
+  );
+  const totalPayeReel = parseFloat(rows[0].total_paye) || 0;
+
+  // 3. Récupérer le total TTC de la vente
   const [ventes] = await pool.execute(
-    `SELECT total_ttc, montant_paye FROM vente WHERE id_vente = ?`,
+    `SELECT total_ttc FROM vente WHERE id_vente = ?`,
     [vente_id]
   );
   const venteActuelle = ventes[0];
 
   if (venteActuelle) {
-    // 3. Calculer le nouveau montant payé et le reste, en s'assurant que les types sont corrects
-    const montantPayeActuel = parseFloat(venteActuelle.montant_paye) || 0;
-    const montantAjoute = parseFloat(montant) || 0;
     const totalTTC = parseFloat(venteActuelle.total_ttc) || 0;
     
-    // S'assurer que le montant payé ne dépasse pas le total
-    const nouveauMontantPaye = Math.min(totalTTC, montantPayeActuel + montantAjoute);
+    // S'assurer que le montant payé ne dépasse pas le total TTC (optionnel, mais garde-fou utile)
+    const nouveauMontantPaye = Math.min(totalTTC, totalPayeReel);
     
-    // S'assurer que le reste n'est jamais négatif
+    // Calculer le reste
     const nouveauReste = Math.max(0, totalTTC - nouveauMontantPaye);
 
-    // 4. Mettre à jour la vente
+    // 4. Mettre à jour la vente avec les valeurs recalculées
     await pool.execute(
       `UPDATE vente SET montant_paye = ?, reste = ? WHERE id_vente = ?`,
       [nouveauMontantPaye, nouveauReste, vente_id]
@@ -130,17 +138,19 @@ export async function getAllVentes(filters = {}) {
 
     query += ` ORDER BY v.id_vente DESC`;
 
-    console.log("=== DEBUG getAllVentes ===");
-    console.log("Query:", query);
-    console.log("Params:", params);
+    if (DEBUG) {
+      logger.info('DEBUG getAllVentes', { query, params });
+    }
 
     const [ventes] = await pool.execute(query, params);
-    
-    console.log("Résultats récupérés:", ventes);
+
+    if (DEBUG) {
+      logger.info('Results retrieved', { count: ventes.length });
+    }
     
     return ventes;
   } catch (err) {
-    console.error("Erreur getAllVentes:", err);
+    logger.error("Erreur getAllVentes:", err);
     throw err;
   }
 }

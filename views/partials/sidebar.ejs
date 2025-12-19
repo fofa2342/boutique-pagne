@@ -1,0 +1,190 @@
+<!-- Sidebar Navigation -->
+<div class="sidebar">
+  <div class="logo">
+    <span class="logo-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="20" x2="18" y2="10"></line>
+        <line x1="12" y1="20" x2="12" y2="4"></line>
+        <line x1="6" y1="20" x2="6" y2="14"></line>
+      </svg>
+    </span>
+    <h1>Gestion Commerciale</h1>
+  </div>
+  
+  <div class="nav-section">
+    <h2>Navigation Principale</h2>
+    <a href="/dashboard" class="nav-item <%= currentPage === 'dashboard' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+      </span>
+      <span>Tableau de Bord</span>
+    </a>
+    <a href="/clients" class="nav-item <%= currentPage === 'clients' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </span>
+      <span>Gestion Clients</span>
+    </a>
+    <a href="/fournisseurs" class="nav-item <%= currentPage === 'fournisseurs' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+      </span>
+      <span>Gestion Fournisseurs</span>
+    </a>
+    <a href="/produits" class="nav-item <%= currentPage === 'produits' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+      </span>
+      <span>Produits</span>
+    </a>
+  </div>
+  
+  <div class="nav-section">
+    <h2>Mouvements de Stock</h2>
+    <a href="/produits/entree" class="nav-item <%= currentPage === 'entreeStock' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        </svg>
+      </span>
+      <span>Entrée Stock</span>
+    </a>
+    <a href="/produits/mouvements/entrees" class="nav-item <%= currentPage === 'listeMouvements' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+      </span>
+      <span>Liste des Entrées</span>
+    </a>
+    <a href="/produits/alertes" class="nav-item <%= currentPage === 'alertesStock' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+          <line x1="12" y1="9" x2="12" y2="13"></line>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </span>
+      <span>Alertes Stock</span>
+    </a>
+  </div>
+  
+  <div class="nav-section">
+    <h2>Ventes</h2>
+    <a href="/ventes/nouveau" class="nav-item <%= currentPage === 'vente' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </span>
+      <span>Nouvelle Vente</span>
+    </a>
+    <a href="/ventes" class="nav-item <%= currentPage === 'listeventes' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="17 14 12 9 7 14"></polyline>
+          <line x1="12" y1="9" x2="12" y2="21"></line>
+          <path d="M3 9V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4"></path>
+        </svg>
+      </span>
+      <span>Liste des Ventes</span>
+    </a>
+  </div>
+  
+  <div class="nav-section">
+    <h2>Actions Rapides</h2>
+    <a href="/clients/inscription" class="nav-item <%= currentPage === 'inscriptionClient' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </span>
+      <span>Nouveau Client</span>
+    </a>
+    <a href="/fournisseurs/inscription" class="nav-item <%= currentPage === 'inscriptionFournisseur' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </span>
+      <span>Nouveau Fournisseur</span>
+    </a>
+    <a href="/produits/ajout" class="nav-item <%= currentPage === 'ajoutProduit' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </span>
+      <span>Nouveau Produit</span>
+    </a>
+  </div>
+  
+  <% if (user && user.role === 'admin') { %>
+  <div class="nav-section">
+    <h2>Administration</h2>
+    <a href="/admin/users" class="nav-item <%= currentPage === 'users' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+          <circle cx="9" cy="7" r="4"></circle>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+        </svg>
+      </span>
+      <span>Utilisateurs</span>
+    </a>
+    <a href="/stats" class="nav-item <%= currentPage === 'stats' ? 'active' : '' %>">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+      </span>
+      <span>Statistiques</span>
+    </a>
+  </div>
+  <% } %>
+  
+  <div class="nav-section">
+    <a href="/auth/logout" class="nav-item">
+      <span class="nav-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+          <polyline points="16 17 21 12 16 7"></polyline>
+          <line x1="21" y1="12" x2="9" y2="12"></line>
+        </svg>
+      </span>
+      <span>Déconnexion</span>
+    </a>
+  </div>
+</div>

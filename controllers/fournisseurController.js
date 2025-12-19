@@ -1,4 +1,5 @@
 // controllers/fournisseurController.js
+import logger from '../config/logger.js';
 import { 
   createFournisseur, 
   getAllFournisseurs, 
@@ -6,6 +7,8 @@ import {
   updateFournisseur, 
   deleteFournisseur 
 } from "../models/fournisseurModel.js";
+
+const DEBUG = process.env.NODE_ENV !== 'production';
 
 // Inscription d'un fournisseur
 export async function inscriptionFournisseur(req, res) {
@@ -25,7 +28,7 @@ export async function inscriptionFournisseur(req, res) {
       message: `Fournisseur inscrit avec succès ! ID: ${fournisseurId}` 
     });
   } catch (error) {
-    console.error("Erreur inscription:", error);
+    logger.error("Erreur inscription:", error);
     res.status(500).send("Erreur lors de l'inscription du fournisseur: " + error.message);
   }
 }
@@ -36,7 +39,7 @@ export async function listeFournisseurs(req, res) {
     const fournisseurs = await getAllFournisseurs();
     res.render("fournisseurs", { fournisseurs });
   } catch (error) {
-    console.error("Erreur liste:", error);
+    logger.error("Erreur liste:", error);
     res.status(500).send("Erreur lors de la récupération des fournisseurs: " + error.message);
   }
 }
@@ -53,7 +56,7 @@ export async function detailsFournisseur(req, res) {
     
     res.render("detailsFournisseur", { fournisseur });
   } catch (error) {
-    console.error("Erreur détails:", error);
+    logger.error("Erreur détails:", error);
     res.status(500).send("Erreur lors de la récupération du fournisseur: " + error.message);
   }
 }
@@ -61,29 +64,31 @@ export async function detailsFournisseur(req, res) {
 // Modification d'un fournisseur - VERSION AVEC DEBUG
 export async function modifierFournisseur(req, res) {
   try {
-    console.log("🔍 MODIFICATION - Headers:", req.headers['content-type']);
-    console.log("📦 MODIFICATION - Body:", req.body);
-    console.log("🆔 MODIFICATION - ID:", req.params.id);
+    if (DEBUG) {
+      logger.info("🔍 MODIFICATION - Headers:", req.headers['content-type']);
+      logger.info(" MODIFICATION - Body:", req.body);
+      logger.info("🆔 MODIFICATION - ID:", req.params.id);
+    }
     
     const { id } = req.params;
     const { nom, telephone, email, pays } = req.body;
     
     // Validation
     if (!nom || !telephone || !pays) {
-      console.log("❌ Données manquantes");
+      if (DEBUG) logger.info(" Données manquantes");
       return res.status(400).send("Nom, téléphone et pays obligatoires !");
     }
 
-    console.log("✅ Données valides, appel au modèle...");
+    if (DEBUG) logger.info(" Données valides, appel au modèle...");
     
     await updateFournisseur(id, { nom, telephone, email, pays });
     
-    console.log("✅ Fournisseur modifié avec succès");
+    if (DEBUG) logger.info(" Fournisseur modifié avec succès");
     
     // Redirection vers la liste après modification
     res.redirect("/fournisseurs");
   } catch (error) {
-    console.error("❌ Erreur modification:", error);
+    logger.error(" Erreur modification:", error);
     res.status(500).send("Erreur lors de la modification du fournisseur: " + error.message);
   }
 }
@@ -97,7 +102,7 @@ export async function supprimerFournisseur(req, res) {
     // Redirection vers la liste après suppression
     res.redirect("/fournisseurs");
   } catch (error) {
-    console.error("Erreur suppression:", error);
+    logger.error("Erreur suppression:", error);
     res.status(500).send("Erreur lors de la suppression du fournisseur: " + error.message);
   }
 }

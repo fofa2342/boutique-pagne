@@ -1,0 +1,123 @@
+<style>
+  /* Sidebar Styles */
+  .sidebar {
+    width: 280px;
+    background-color: var(--secondary-color, #2c3e50);
+    color: white;
+    padding: 20px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    transition: all 0.3s ease;
+    overflow-y: auto;
+    position: fixed;
+    height: 100vh;
+    left: 0;
+    top: 0;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    padding: 0 25px 30px;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .logo-icon {
+    margin-right: 12px;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .logo h1 {
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  .nav-section {
+    margin-bottom: 25px;
+    padding: 0 15px;
+  }
+
+  .nav-section h2 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.6;
+    padding: 10px 15px 8px;
+    margin-bottom: 5px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    border-radius: 8px;
+    margin: 3px 0;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+  }
+
+  .nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateX(3px);
+  }
+
+  .nav-item.active {
+    background-color: var(--primary-color, #3498db);
+    box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+  }
+
+  .nav-icon {
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+    opacity: 0.9;
+  }
+
+  /* Main Content Adjustment for Fixed Sidebar */
+  body {
+    display: flex;
+    min-height: 100vh;
+    background-color: #f5f7fa;
+    color: #333;
+  }
+
+  .main-content {
+    margin-left: 280px;
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 100%;
+      height: auto;
+      position: relative;
+    }
+
+    .main-content {
+      margin-left: 0;
+      padding: 20px;
+    }
+
+    .nav-section {
+      margin-bottom: 15px;
+    }
+  }
+
+  @media print {
+    .sidebar {
+      display: none;
+    }
+
+    .main-content {
+      margin-left: 0;
+    }
+  }
+</style>

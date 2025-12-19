@@ -1,4 +1,5 @@
 // controllers/dashboardController.js
+import logger from '../config/logger.js';
 import { getDashboardStats, getMonthlyStats } from "../models/dashboardModel.js";
 
 // Page principale du tableau de bord
@@ -13,8 +14,8 @@ export async function showDashboard(req, res) {
       title: "Tableau de Bord"
     });
   } catch (error) {
-    console.error("Erreur dashboard:", error);
-    res.status(500).render("erreur", {
+    logger.error("Erreur dashboard:", error);
+    res.status(500).render("error", {
       message: "Erreur lors du chargement du tableau de bord",
       title: "Erreur"
     });
@@ -35,7 +36,7 @@ export async function renderDashboardPage(req, res) {
       monthlyStats: monthlyStats
     });
   } catch (error) {
-    console.error("Erreur rendu dashboard:", error);
+    logger.error("Erreur rendu dashboard:", error);
     res.status(500).render('error', { 
       message: "Erreur lors du chargement du tableau de bord" 
     });
@@ -54,7 +55,7 @@ export async function getDashboardData(req, res) {
       monthlyStats
     });
   } catch (error) {
-    console.error("Erreur API dashboard:", error);
+    logger.error("Erreur API dashboard:", error);
     res.json({
       success: false,
       error: "Erreur lors de la récupération des données"

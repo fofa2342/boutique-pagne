@@ -570,26 +570,58 @@
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="logo">
-      <span class="logo-icon">📊</span>
+      <span class="logo-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+      </span>
       <h1>Gestion Commerciale</h1>
     </div>
     
     <div class="nav-section">
       <h2>Navigation</h2>
       <a href="#" class="nav-item active">
-        <span class="nav-icon">➕</span>
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </span>
         <span>Nouvelle Vente</span>
       </a>
       <a href="/clients" class="nav-item">
-        <span class="nav-icon">👥</span>
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </span>
         <span>Clients</span>
       </a>
       <a href="/clients/inscription" class="nav-item">
-        <span class="nav-icon">➕</span>
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="8.5" cy="7" r="4"></circle>
+            <line x1="20" y1="8" x2="20" y2="14"></line>
+            <line x1="23" y1="11" x2="17" y2="11"></line>
+          </svg>
+        </span>
         <span>Nouveau Client</span>
       </a>
       <a href="/fournisseurs" class="nav-item">
-        <span class="nav-icon">🏭</span>
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+        </span>
         <span>Gestion Fournisseurs</span>
       </a>
     </div>   
@@ -599,10 +631,21 @@
   <div class="main-content">
     <div class="header">
       <h1>Nouvelle Vente</h1>
-      <a href="/ventes" class="btn btn-secondary">
-        <span class="btn-icon">←</span>
-        Retour aux ventes
-      </a>
+      <div style="display: flex; gap: 10px;">
+        <a href="/dashboard" class="btn btn-secondary">
+          <span class="btn-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </span>
+          Retour au Tableau de Bord
+        </a>
+        <a href="/ventes" class="btn btn-secondary">
+          <span class="btn-icon">←</span>
+          Retour aux ventes
+        </a>
+      </div>
     </div>
 
     <form id="venteForm" action="/ventes/traiter" method="POST">
@@ -697,7 +740,13 @@
         </div>
 
         <div id="videMsg" class="empty-state">
-          <i>🛒</i>
+          <i>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+          </i>
           <p>Aucune ligne pour le moment</p>
           <p class="muted">Ajoutez un produit pour commencer</p>
         </div>
@@ -769,10 +818,10 @@
       <div class="card payment-client">
         <h2>Paiement Client</h2>
         
-        <div class="client-info" id="clientInfo" style="display: none;">
-          <h3>Informations Client</h3>
-          <p><strong>Nom:</strong> <span id="clientNom"></span></p>
-          <p><strong>Téléphone:</strong> <span id="clientTelephone"></span></p>
+        <div class="client-info" id="clientInfo" style="display: none; background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid #007bff;">
+          <h3 style="margin-top: 0; margin-bottom: 10px; color: #333; font-size: 16px;">Informations Client</h3>
+          <p style="margin: 5px 0;"><strong>Nom:</strong> <span id="clientNom"></span></p>
+          <p style="margin: 5px 0;"><strong>Téléphone:</strong> <span id="clientTelephone"></span></p>
         </div>
         
         <div class="payment-summary">
@@ -782,21 +831,20 @@
           </div>
           <div class="payment-field">
             <label for="montantDonne">Montant donné</label>
-            <input type="number" step="0.01" min="0" id="montantDonne" name="montant_donne" class="small" placeholder="0.00">
+            <input type="text" id="montantDonne" readonly class="small" value="0.00">
           </div>
           <div class="payment-field">
             <label for="montantAPayer">Montant à payer</label>
-            <input type="number" step="0.01" min="0" id="montantAPayer" name="montant_paye" class="small" placeholder="0.00">
+            <input type="text" id="montantAPayer" readonly class="small" value="0.00">
           </div>
         </div>
         
-        <div class="payment-result" id="paymentResult">
-          Cliquez sur "Calculer" pour voir le résultat
+        <div class="payment-result" id="paymentResult" style="padding: 15px; border-radius: 8px; text-align: center; font-weight: 500;">
+          Sélectionnez un client et ajoutez des produits pour commencer
         </div>
         
-        <div style="margin-top: 20px; display: flex; gap: 15px;">
-          <button type="button" id="btnCalculerPaiement" class="btn btn-success">Calculer</button>
-          <button type="button" id="btnImprimerRecu" class="btn">Imprimer le reçu</button>
+        <div style="margin-top: 20px;">
+          <button type="button" id="btnImprimerRecu" class="btn" style="width: 100%;">Imprimer le reçu</button>
         </div>
       </div>
 
@@ -846,7 +894,14 @@
       
       <!-- Section dette qui s'affiche seulement si le client n'a pas tout payé -->
       <div class="receipt-dette" id="receiptDette" style="display: none;">
-        <p>⚠️ DETTE ENREGISTRÉE</p>
+        <p>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 5px;">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          DETTE ENREGISTRÉE
+        </p>
         <p>Reste à payer: <span id="receiptDetteMontant">0.00</span></p>
       </div>
       
@@ -879,6 +934,7 @@
       const taxInput = qs('#tax');
       const totalTTCEl = qs('#totalTTC');
       const resteEl = qs('#reste');
+      const totalPayeEl = qs('#totalPaye');
       const hiddenInputs = qs('#hiddenInputs');
       const btnAddPayment = qs('#btnAddPayment');
       const paymentAmount = qs('#paymentAmount');
@@ -886,7 +942,7 @@
       const paymentsList = qs('#paymentsList');
       const venteForm = qs('#venteForm');
       
-      // Nouveaux éléments pour le reçu
+      // Elements section Paiement Client
       const clientSelect = qs('#client_id');
       const clientInfo = qs('#clientInfo');
       const clientNom = qs('#clientNom');
@@ -895,8 +951,9 @@
       const montantDonne = qs('#montantDonne');
       const montantAPayer = qs('#montantAPayer');
       const paymentResult = qs('#paymentResult');
-      const btnCalculerPaiement = qs('#btnCalculerPaiement');
       const btnImprimerRecu = qs('#btnImprimerRecu');
+      
+      // Elements Receipt
       const receiptContainer = qs('#receiptContainer');
       const receiptDate = qs('#receiptDate');
       const receiptClient = qs('#receiptClient');
@@ -926,26 +983,74 @@
         totalEl.textContent = format(total);
         totalMargeEl.textContent = format(totalMarge);
         totalTTCEl.textContent = format(totalTTC);
+        totalPayeEl.textContent = format(totalPaiements);
         resteEl.textContent = format(reste);
         
-        // Mettre à jour le montant total pour le reçu
+        // Mettre à jour les champs "Paiement Client" automatiquement
         montantTotal.value = format(totalTTC);
+        montantDonne.value = format(totalPaiements);
+        montantAPayer.value = format(reste);
         
-        // Initialiser le montant à payer avec le total TTC si vide
-        if (!montantAPayer.value || parseFloat(montantAPayer.value) === 0) {
-          montantAPayer.value = format(totalTTC);
+        // Mettre à jour le message de résultat automatiquement
+        updatePaymentResultMessage(totalTTC, totalPaiements, reste);
+        
+        rebuildHiddenInputs();
+      }
+
+      function updatePaymentResultMessage(totalTTC, totalPaiements, reste) {
+        if (cart.length === 0) {
+          paymentResult.innerHTML = `
+            <div style="color: #666; font-size: 16px;">
+              Sélectionnez un client et ajoutez des produits pour commencer
+            </div>
+          `;
+          return;
         }
 
-        rebuildHiddenInputs();
+        if (totalPaiements === 0) {
+          paymentResult.innerHTML = `
+            <div style="color: #666; font-size: 16px;">
+              Aucun paiement enregistré
+            </div>
+            <div style="font-size: 14px; color: #666; margin-top: 5px;">
+              Total à payer: ${format(totalTTC)}
+            </div>
+          `;
+          return;
+        }
+
+        if (reste <= 0.01) {
+          paymentResult.innerHTML = `
+            <div style="color: #2ecc71; font-size: 18px; font-weight: bold;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 5px;">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              La vente est déjà soldée
+            </div>
+            <div style="font-size: 14px; color: #666; margin-top: 8px;">
+              Total payé: ${format(totalPaiements)}
+            </div>
+          `;
+        } else {
+          paymentResult.innerHTML = `
+            <div style="color: #f39c12; font-size: 18px; font-weight: bold;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: middle; margin-right: 5px;">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              Reste à payer: ${format(reste)}
+            </div>
+            <div style="font-size: 14px; color: #666; margin-top: 8px;">
+              Total versé: ${format(totalPaiements)} sur ${format(totalTTC)}
+            </div>
+          `;
+        }
       }
 
       function rebuildHiddenInputs(){
         hiddenInputs.innerHTML = '';
-
-        console.log("=== DEBUG rebuildHiddenInputs ===");
-        console.log("Montant donné:", montantDonne.value);
-        console.log("Montant à payer:", montantAPayer.value);
-
+        
         cart.forEach((l, idx) => {
           const fields = {
             produit_id: l.produit_id,
@@ -962,9 +1067,13 @@
           });
         });
 
-        // Les champs montant_donne et montant_paye sont déjà dans le formulaire
-        // avec les attributs "name", donc pas besoin de les recréer
-        
+        // TOUJOURS envoyer la liste des paiements, même si elle est vide
+        const inpPayments = document.createElement('input');
+        inpPayments.type = 'hidden';
+        inpPayments.name = 'paiements';
+        inpPayments.value = JSON.stringify(payments);
+        hiddenInputs.appendChild(inpPayments);
+
         const inpTotal = document.createElement('input');
         inpTotal.type='hidden'; inpTotal.name='total'; inpTotal.value=totalEl.textContent;
         hiddenInputs.appendChild(inpTotal);
@@ -1067,11 +1176,12 @@
         updateCartComputed();
       });
 
-      // Paiements
+      // Paiements (Bouton "Ajouter paiement" standard)
       btnAddPayment.addEventListener('click', ()=>{
         const amount = parseFloat(paymentAmount.value||0);
         const mode = (paymentMode.value||'N/A').trim();
         if(amount <= 0){ alert('Montant paiement invalide'); return; }
+        
         payments.push({amount, mode});
         renderPayments();
         paymentAmount.value=''; paymentMode.value='';
@@ -1092,7 +1202,7 @@
         });
         paymentsList.appendChild(ul);
 
-        qsa('.btn-danger.small').forEach(b=>{
+        qsa('.payments-list .btn-danger').forEach(b=>{
           b.addEventListener('click', e=>{
             const idx = Number(e.currentTarget.dataset.idx);
             payments.splice(idx,1);
@@ -1102,49 +1212,6 @@
         });
       }
 
-      // Calculer le paiement
-      btnCalculerPaiement.addEventListener('click', () => {
-        const totalAPayer = parseFloat(montantTotal.value || 0);
-        const donne = parseFloat(montantDonne.value || 0);
-        const aPayer = parseFloat(montantAPayer.value || 0);
-        
-        // Le montant payé ne peut pas dépasser le total
-        const montantPayeEffectif = Math.min(aPayer, totalAPayer);
-        
-        // Calculer le reste à payer
-        const resteAPayer = totalAPayer - montantPayeEffectif;
-        
-        // Calculer la monnaie à rendre
-        const monnaieARendre = Math.max(0, donne - montantPayeEffectif);
-        
-        console.log("=== DEBUG Calcul Paiement ===");
-        console.log("Total à payer:", totalAPayer);
-        console.log("Montant donné:", donne);
-        console.log("Montant à payer saisi:", aPayer);
-        console.log("Montant payé effectif:", montantPayeEffectif);
-        console.log("Reste à payer:", resteAPayer);
-        console.log("Monnaie à rendre:", monnaieARendre);
-
-        if (resteAPayer > 0) {
-          // Il reste de l'argent à payer
-          paymentResult.textContent = `Paiement partiel! Reste à payer: ${format(resteAPayer)}`;
-          paymentResult.className = 'payment-result reste';
-        } else if (monnaieARendre > 0) {
-          // Monnaie à rendre
-          paymentResult.textContent = `Paiement complet! Monnaie à rendre: ${format(monnaieARendre)}`;
-          paymentResult.className = 'payment-result monnaie';
-        } else {
-          // Paiement exact
-          paymentResult.textContent = `Paiement exact - Merci !`;
-          paymentResult.className = 'payment-result';
-          paymentResult.style.borderColor = '#3498db';
-          paymentResult.style.color = '#3498db';
-        }
-        
-        // Mettre à jour le montant à payer avec la valeur corrigée
-        montantAPayer.value = format(montantPayeEffectif);
-      });
-
       // Imprimer le reçu
       btnImprimerRecu.addEventListener('click', () => {
         if (cart.length === 0) {
@@ -1152,72 +1219,61 @@
           return;
         }
         
-        if (!currentClient) {
-          alert("Veuillez sélectionner un client");
-          return;
-        }
-        
-        const totalAPayer = parseFloat(montantTotal.value || 0);
-        const donne = parseFloat(montantDonne.value || 0);
-        const aPayer = parseFloat(montantAPayer.value || 0);
-        
-        const montantPayeEffectif = Math.min(aPayer, totalAPayer);
-        const resteAPayer = totalAPayer - montantPayeEffectif;
-        const monnaieARendre = Math.max(0, donne - montantPayeEffectif);
-        
-        // Masquer la section dette par défaut
-        receiptDette.style.display = 'none';
-        
-        if (resteAPayer > 0) {
-          // Paiement partiel - afficher la dette
-          receiptResultLabel.textContent = "Reste à payer:";
-          receiptResultValue.textContent = format(resteAPayer);
-          receiptResultValue.style.color = "#f39c12";
-          
-          // Afficher la section dette
-          receiptDette.style.display = 'block';
-          receiptDetteMontant.textContent = format(resteAPayer);
-        } else if (monnaieARendre > 0) {
-          // Monnaie à rendre
-          receiptResultLabel.textContent = "Monnaie rendue:";
-          receiptResultValue.textContent = format(monnaieARendre);
-          receiptResultValue.style.color = "#2ecc71";
-        } else {
-          // Paiement exact
-          receiptResultLabel.textContent = "Paiement exact";
-          receiptResultValue.textContent = "0.00";
-          receiptResultValue.style.color = "#3498db";
-        }
-        
-        // Mettre à jour le reçu
+        // Mettre à jour les infos du reçu
         receiptDate.textContent = new Date().toLocaleString('fr-FR');
         
-        // Informations client
-        receiptClient.innerHTML = `
-          <p><strong>Client:</strong> ${currentClient.nom}</p>
-          <p><strong>Tél:</strong> ${currentClient.telephone || 'Non renseigné'}</p>
-        `;
+        if (currentClient) {
+          receiptClient.innerHTML = `
+            <p><strong>Client:</strong> ${currentClient.nom}</p>
+            <p><strong>Tél:</strong> ${currentClient.telephone || 'Non renseigné'}</p>
+          `;
+        } else {
+           receiptClient.innerHTML = '<p>Client de passage</p>';
+        }
         
-        // Vider et remplir les éléments du reçu
+        // Items
         receiptItems.innerHTML = '';
         cart.forEach(item => {
           const itemDiv = document.createElement('div');
           itemDiv.className = 'receipt-item';
           itemDiv.innerHTML = `
             <span>${item.nom} x${item.qty}</span>
-            <span>${format(item.prix_vente * item.qty)}</span>
+            <span>${format(item.subtotal)}</span>
           `;
           receiptItems.appendChild(itemDiv);
         });
         
-        receiptTotal.textContent = format(totalAPayer);
-        receiptMontantDonne.textContent = format(donne);
+        // Totaux
+        const totalTTC = parseFloat(totalTTCEl.textContent);
+        const totalPaye = payments.reduce((s,p) => s + Number(p.amount||0),0);
+        const reste = Math.max(0, totalTTC - totalPaye);
         
-        // Utiliser le premier mode de paiement ou "Espèces" par défaut
-        const paymentModeValue = payments.length > 0 ? payments[0].mode : "Espèces";
-        receiptPaymentMode.textContent = paymentModeValue;
+        receiptTotal.textContent = format(totalTTC);
         
-        // Afficher et imprimer le reçu
+        // On affiche le total payé cumulé
+        receiptMontantDonne.parentNode.querySelector('span:first-child').textContent = "Total Versé:";
+        receiptMontantDonne.textContent = format(totalPaye);
+        
+        // Résultat (Reste ou Soldé)
+        if (reste > 0.01) {
+          receiptResultLabel.textContent = "Reste à payer:";
+          receiptResultValue.textContent = format(reste);
+          receiptResultValue.style.color = "#f39c12"; // Orange
+          
+          receiptDette.style.display = 'block';
+          receiptDetteMontant.textContent = format(reste);
+        } else {
+          receiptResultLabel.textContent = "Etat:";
+          receiptResultValue.textContent = "Soldé";
+          receiptResultValue.style.color = "#2ecc71"; // Green
+          receiptDette.style.display = 'none';
+        }
+
+        // Mode de paiement (Liste)
+        const modes = [...new Set(payments.map(p => p.mode))].join(', ');
+        receiptPaymentMode.textContent = modes || "Aucun";
+        
+        // Afficher et imprimer
         receiptContainer.style.display = 'block';
         window.print();
         receiptContainer.style.display = 'none';
@@ -1226,29 +1282,36 @@
       taxInput.addEventListener('input', updateSummary);
 
       venteForm.addEventListener('submit', e=>{
-        if(!qs('#client_id').value){ alert('Choisir un client'); e.preventDefault(); return; }
+        if(!qs('#client_id').value){ 
+            // Permettre la vente sans client (Client de passage) si désiré, sinon bloquer
+            // alert('Choisir un client'); e.preventDefault(); return; 
+        }
         if(cart.length===0){ alert('Ajoutez au moins un produit'); e.preventDefault(); return; }
         
-        // Validation finale
-        const totalAPayer = parseFloat(montantTotal.value || 0);
-        const aPayer = parseFloat(montantAPayer.value || 0);
-        const montantPayeEffectif = Math.min(aPayer, totalAPayer);
-        const dette = totalAPayer - montantPayeEffectif;
+        // Soumettre avec un montant à payer vide si rien n'a été entré manuellement.
+        // C'est maintenant géré en n'envoyant QUE la liste de paiement.
+
+        const totalTTC = parseFloat(totalTTCEl.textContent);
+        const totalPaye = payments.reduce((s,p) => s + Number(p.amount||0),0);
+        const reste = Math.max(0, totalTTC - totalPaye);
         
-        console.log("=== FINAL SUBMIT ===");
-        console.log("Montant payé qui sera envoyé:", montantPayeEffectif);
-        console.log("Dette:", dette);
-        
-        if (dette > 0) {
-          if (!confirm(`Le client a une dette de ${format(dette)}. Confirmer l'enregistrement ?`)) {
+        // Warning si dette
+        if (reste > 0.01 && payments.length > 0) { // On prévient que si un paiement a été tenté
+          if (!confirm(`Attention : La vente n'est pas totalement réglée. Reste à payer : ${format(reste)}. Continuer ?`)) {
             e.preventDefault();
             return;
           }
+        } else if (totalPaye <= 0) {
+            if(!confirm('Aucun paiement enregistré pour cette vente. Voulez-vous la créer avec une dette totale ?')) {
+                e.preventDefault();
+                return;
+            }
         }
       });
 
       renderCart();
       renderPayments();
+      updateSummary();
 
     })();
   </script>

@@ -7,14 +7,16 @@ import {
   renderLogin,
   logoutUser,
 } from '../controllers/authController.js';
+import { validateUserRegistration, validateLogin } from '../middleware/validators.js';
 
 const router = express.Router();
 
 router.get('/register', renderRegister);
-router.post('/register', registerUser);
+router.post('/register', validateUserRegistration, registerUser);
 router.get('/login', renderLogin);
 router.post(
   '/login',
+  validateLogin,
   passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/auth/login',

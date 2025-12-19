@@ -1,6 +1,5 @@
 // models/produitModel.js
-import pool from "../config/db.js";
-
+import pool from "../config/db.js";import logger from '../config/logger.js';
 // Créer un produit
 export async function createProduit(produitData) {
   const { nom, description, prix_achat, prix_vente, quantite_stock, seuil_alerte, fournisseur_id } = produitData;
@@ -13,10 +12,10 @@ export async function createProduit(produitData) {
       [nom, description || '', prix_achat, prix_vente, quantite_stock || 0, seuil_alerte || 5, fournisseur_id || null]
     );
     
-    console.log("Produit créé en base de données, ID:", result.insertId);
+    logger.info('Product created in database', { productId: result.insertId });
     return result.insertId;
   } catch (error) {
-    console.error("Erreur création produit:", error);
+    logger.error('Error creating product', { error: error.message });
     throw error;
   }
 }
@@ -32,7 +31,7 @@ export async function getAllProduits() {
     );
     return rows;
   } catch (error) {
-    console.error("❌ Erreur récupération produits:", error);
+    logger.error(" Erreur récupération produits:", error);
     return [];
   }
 }
@@ -49,7 +48,7 @@ export async function getProduitById(id) {
     );
     return rows[0];
   } catch (error) {
-    console.error("❌ Erreur récupération produit:", error);
+    logger.error(" Erreur récupération produit:", error);
     return null;
   }
 }
@@ -66,9 +65,9 @@ export async function updateProduit(id, produitData) {
        WHERE id_produit = ?`,
       [nom, description, prix_achat, prix_vente, quantite_stock, seuil_alerte, id]
     );
-    console.log("✏️ Produit mis à jour, ID:", id);
+    logger.info('Product updated', { productId: id });
   } catch (error) {
-    console.error("❌ Erreur modification produit:", error);
+    logger.error('Error updating product', { productId: id, error: error.message });
     throw error;
   }
 }
@@ -80,9 +79,9 @@ export async function deleteProduit(id) {
       "DELETE FROM produit WHERE id_produit = ?",
       [id]
     );
-    console.log("🗑️ Produit supprimé, ID:", id);
+    logger.info(" Produit supprimé, ID:", id);
   } catch (error) {
-    console.error("❌ Erreur suppression produit:", error);
+    logger.error(" Erreur suppression produit:", error);
     throw error;
   }
 }
@@ -99,7 +98,7 @@ export async function getProduitsAlerte() {
     );
     return rows;
   } catch (error) {
-    console.error("❌ Erreur récupération alertes:", error);
+    logger.error(" Erreur récupération alertes:", error);
     return [];
   }
 }
@@ -111,9 +110,9 @@ export async function updateStock(id, nouvelleQuantite) {
       "UPDATE produit SET quantite_stock = ? WHERE id_produit = ?",
       [nouvelleQuantite, id]
     );
-    console.log("📊 Stock mis à jour, Produit ID:", id, "Nouveau stock:", nouvelleQuantite);
+    logger.info(" Stock mis à jour, Produit ID:", id, "Nouveau stock:", nouvelleQuantite);
   } catch (error) {
-    console.error("❌ Erreur mise à jour stock:", error);
+    logger.error(" Erreur mise à jour stock:", error);
     throw error;
   }
 }
@@ -130,10 +129,10 @@ export async function createMouvementStock(mouvementData) {
       [produit_id, type, quantite, fournisseur_nom, raison || '', notes || '', prix_achat || null]
     );
     
-    console.log("📦 Mouvement créé en base de données, ID:", result.insertId);
+    logger.info('Stock movement created', { movementId: result.insertId });
     return result.insertId;
   } catch (error) {
-    console.error("❌ Erreur création mouvement:", error);
+    logger.error('Error creating stock movement', { error: error.message });
     throw error;
   }
 }
@@ -149,7 +148,7 @@ export async function getMouvementsStock() {
     );
     return rows;
   } catch (error) {
-    console.error("❌ Erreur récupération mouvements:", error);
+    logger.error(" Erreur récupération mouvements:", error);
     return [];
   }
 }
@@ -167,7 +166,7 @@ export async function getMouvementsByProduit(produitId) {
     );
     return rows;
   } catch (error) {
-        console.error("❌ Erreur récupération mouvements produit:", error);
+        logger.error(" Erreur récupération mouvements produit:", error);
         return [];
       }
     }

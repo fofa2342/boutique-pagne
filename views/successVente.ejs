@@ -11,7 +11,12 @@
     </style>
 </head>
 <body>
-    <div class="success">✅ <%= message %></div>
+    <div class="success">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline-block;vertical-align:middle;margin-right:8px;">
+        <polyline points="20 6 9 17 4 12"></polyline>
+      </svg>
+      <%= message %>
+    </div>
     <div>
         <a href="/ventes" class="btn">Retour aux ventes</a>
         <a href="/ventes" class="btn">Nouvelle vente</a>

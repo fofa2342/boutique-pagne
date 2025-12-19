@@ -22,4 +22,23 @@ router.get("/", async (req, res) => {
   }
 });
 
+// API endpoint used by the dashboard page to refresh data
+router.get("/api/data", async (req, res) => {
+  try {
+    const stats = await getDashboardStats();
+    const monthlyStats = await getMonthlyStats();
+    res.json({
+      success: true,
+      stats,
+      monthlyStats,
+    });
+  } catch (error) {
+    console.error("Erreur API dashboard:", error);
+    res.status(500).json({
+      success: false,
+      error: "Erreur lors de la récupération des données",
+    });
+  }
+});
+
 export default router;

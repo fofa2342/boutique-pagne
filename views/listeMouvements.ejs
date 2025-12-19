@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %></title>
+  <%- include('partials/sidebarStyles') %>
   <style>
     :root {
       --primary-color: #3498db;
@@ -23,8 +24,6 @@
       margin: 0;
       display: flex;
     }
-    .sidebar { width: 280px; background-color: var(--secondary-color); color: white; padding: 20px 0; }
-    .main-content { flex: 1; padding: 30px; }
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
     h1 { color: var(--secondary-color); }
     .btn { display: inline-flex; align-items: center; padding: 10px 20px; background-color: var(--primary-color); color: white; text-decoration: none; border-radius: var(--border-radius); border: none; cursor: pointer; }
@@ -45,9 +44,7 @@
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <!-- Sidebar content can be added here -->
-  </div>
+  <%- include('partials/sidebar', { currentPage: 'listeMouvements', user: user }) %>
 
   <div class="main-content">
     <div class="header">

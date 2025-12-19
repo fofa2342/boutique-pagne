@@ -1,4 +1,5 @@
 // controllers/authController.js
+import logger from '../config/logger.js';
 import { createUser } from '../models/userModel.js';
 
 export const renderRegister = (req, res) => {
@@ -12,7 +13,7 @@ export const registerUser = async (req, res) => {
     req.flash('success_msg', 'You are now registered and can log in');
     res.redirect('/auth/login');
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     req.flash('error_msg', 'Something went wrong. Please try again.');
     res.redirect('/auth/register');
   }

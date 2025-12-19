@@ -7,6 +7,7 @@ import {
   modifierFournisseur,
   supprimerFournisseur
 } from "../controllers/fournisseurController.js";
+import { validateSupplier, validateId } from '../middleware/validators.js';
 
 const router = express.Router();
 
@@ -15,11 +16,11 @@ router.get("/", listeFournisseurs);
 router.get("/inscription", (req, res) => {
   res.render("inscriptionFournisseur");
 });
-router.post("/inscription", inscriptionFournisseur);
-router.get("/:id", detailsFournisseur);
+router.post("/inscription", validateSupplier, inscriptionFournisseur);
+router.get("/:id", validateId, detailsFournisseur);
 
 // ⭐ CORRECTION : Utiliser le même format
-router.post("/modifier/:id", modifierFournisseur);      // POST /fournisseurs/modifier/123
-router.post("/supprimer/:id", supprimerFournisseur);    // POST /fournisseurs/supprimer/123
+router.post("/modifier/:id", validateId, validateSupplier, modifierFournisseur);      // POST /fournisseurs/modifier/123
+router.post("/supprimer/:id", validateId, supprimerFournisseur);    // POST /fournisseurs/supprimer/123
 
 export default router;

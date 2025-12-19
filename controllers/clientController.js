@@ -1,4 +1,5 @@
 // controllers/clientController.js
+import logger from '../config/logger.js';
 import { 
   createClient, 
   getAllClients,
@@ -18,7 +19,7 @@ export async function inscriptionClient(req, res) {
     const clientId = await createClient({ nom, telephone, email, adresse });
     res.render("success", { message: `Client inscrit avec succès ! ID: ${clientId}` });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).send("Erreur lors de l'inscription du client");
   }
 }
@@ -29,7 +30,7 @@ export async function listeClients(req, res) {
     const clients = await getAllClients();
     res.render("clients", { clients });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).send("Erreur lors de la récupération des clients");
   }
 }
@@ -44,7 +45,7 @@ export async function showEditClientForm(req, res) {
     }
     res.render("editClient", { client });
   } catch (error) {
-    console.error("Erreur affichage formulaire modification:", error);
+    logger.error("Erreur affichage formulaire modification:", error);
     res.status(500).send("Erreur lors de la récupération du client");
   }
 }
@@ -62,7 +63,7 @@ export async function updateClientController(req, res) {
     await updateClient(id, { nom, telephone, email, adresse });
     res.redirect("/clients");
   } catch (error) {
-    console.error("Erreur modification client:", error);
+    logger.error("Erreur modification client:", error);
     res.status(500).send("Erreur lors de la mise à jour du client");
   }
 }
@@ -74,7 +75,7 @@ export async function deleteClientController(req, res) {
     await deleteClient(id);
     res.redirect("/clients");
   } catch (error) {
-    console.error("Erreur suppression client:", error);
+    logger.error("Erreur suppression client:", error);
     res.status(500).send("Erreur lors de la suppression du client");
   }
 }

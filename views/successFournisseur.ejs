@@ -234,22 +234,50 @@
   <!-- Sidebar -->
   <div class="sidebar">
     <div class="logo">
-      <span class="logo-icon">🏭</span>
+      <span class="logo-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"></rect>
+          <rect x="14" y="3" width="7" height="7"></rect>
+          <rect x="14" y="14" width="7" height="7"></rect>
+          <rect x="3" y="14" width="7" height="7"></rect>
+        </svg>
+      </span>
       <h1>Gestion Fournisseurs</h1>
     </div>
     
     <div class="nav-section">
       <h2>Navigation</h2>
       <a href="/fournisseurs" class="nav-item">
-        <span class="nav-icon">📋</span>
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="8" y1="6" x2="21" y2="6"></line>
+            <line x1="8" y1="12" x2="21" y2="12"></line>
+            <line x1="8" y1="18" x2="21" y2="18"></line>
+            <line x1="3" y1="6" x2="3.01" y2="6"></line>
+            <line x1="3" y1="12" x2="3.01" y2="12"></line>
+            <line x1="3" y1="18" x2="3.01" y2="18"></line>
+          </svg>
+        </span>
         <span>Liste des Fournisseurs</span>
       </a>
       <a href="/fournisseurs/inscription" class="nav-item">
-        <span class="nav-icon">➕</span>
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </span>
         <span>Nouveau Fournisseur</span>
       </a>
       <a href="/clients" class="nav-item">
-        <span class="nav-icon">👥</span>
+        <span class="nav-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </span>
         <span>Gestion Clients</span>
       </a>
     </div>
@@ -258,7 +286,11 @@
   <!-- Main Content -->
   <div class="main-content">
     <div class="success-container">
-      <div class="success-icon">✅</div>
+      <div class="success-icon">
+        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
       <h1 class="success-title">Succès !</h1>
       <p class="success-message"><%= message %></p>
       
@@ -268,7 +300,16 @@
           Nouvelle inscription
         </a>
         <a href="/fournisseurs" class="btn btn-success">
-          <span class="btn-icon">📋</span>
+          <span class="btn-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="8" y1="6" x2="21" y2="6"></line>
+              <line x1="8" y1="12" x2="21" y2="12"></line>
+              <line x1="8" y1="18" x2="21" y2="18"></line>
+              <line x1="3" y1="6" x2="3.01" y2="6"></line>
+              <line x1="3" y1="12" x2="3.01" y2="12"></line>
+              <line x1="3" y1="18" x2="3.01" y2="18"></line>
+            </svg>
+          </span>
           Voir la liste des fournisseurs
         </a>
       </div>

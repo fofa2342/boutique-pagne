@@ -1,4 +1,5 @@
 // controllers/adminController.js
+import logger from '../config/logger.js';
 import { getAllUsers, updateUserStatus, updateUserRole, findUserById, deleteUser as deleteUserModel } from '../models/userModel.js';
 
 export const renderUserManagement = async (req, res) => {
@@ -6,7 +7,7 @@ export const renderUserManagement = async (req, res) => {
     const users = await getAllUsers();
     res.render('admin/users', { users, layout: 'layout' });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     req.flash('error_msg', 'Could not fetch users.');
     res.redirect('/dashboard');
   }
@@ -25,7 +26,7 @@ export const approveUser = async (req, res) => {
         req.flash('success_msg', 'User has been approved.');
         res.redirect('/admin/users');
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         req.flash('error_msg', 'Failed to approve user.');
         res.redirect('/admin/users');
     }
@@ -44,7 +45,7 @@ export const suspendUser = async (req, res) => {
         req.flash('success_msg', 'User has been suspended.');
         res.redirect('/admin/users');
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         req.flash('error_msg', 'Failed to suspend user.');
         res.redirect('/admin/users');
     }
@@ -63,7 +64,7 @@ export const promoteUser = async (req, res) => {
         req.flash('success_msg', 'User has been promoted to Admin.');
         res.redirect('/admin/users');
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         req.flash('error_msg', 'Failed to promote user.');
         res.redirect('/admin/users');
     }
@@ -82,7 +83,7 @@ export const demoteUser = async (req, res) => {
         req.flash('success_msg', 'User has been demoted to User.');
         res.redirect('/admin/users');
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         req.flash('error_msg', 'Failed to demote user.');
         res.redirect('/admin/users');
     }
@@ -118,7 +119,7 @@ export const deleteUser = async (req, res) => {
         res.redirect('/admin/users');
 
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         req.flash('error_msg', 'Failed to delete user.');
         res.redirect('/admin/users');
     }

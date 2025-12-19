@@ -13,15 +13,22 @@
   "description": "",
   "dependencies": {
     "bcryptjs": "^3.0.3",
+    "compression": "^1.8.1",
     "connect-flash": "^0.1.1",
+    "csurf": "^1.11.0",
     "dotenv": "^17.2.3",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-mysql-session": "^3.0.3",
+    "express-rate-limit": "^7.1.5",
     "express-session": "^1.18.2",
+    "express-validator": "^7.0.1",
+    "helmet": "^8.0.0",
     "method-override": "^3.0.0",
+    "morgan": "^1.10.0",
     "mysql2": "^3.15.1",
     "passport": "^0.7.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "winston": "^3.11.0"
   }
 }

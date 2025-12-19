@@ -1,3 +1,4 @@
+import logger from '../config/logger.js';
 import {
   createVente,
   addVenteDetail,
@@ -11,6 +12,9 @@ import {
 
 import { getAllProduits, getProduitById, updateStock } from "../models/produitModel.js";
 import { getAllClients } from "../models/clientModel.js";
+import { processSaleWithTransaction, withTransaction } from '../utils/transactions.js';
+
+const DEBUG = process.env.NODE_ENV !== 'production';
 
 /* ------------------------------------------------------------
    PAGE : LISTE DES VENTES
@@ -19,11 +23,12 @@ export async function listeVentes(req, res) {
   try {
     const { client } = req.query;
     const ventes = await getAllVentes({ client });
-    
-    console.log("=== DEBUG listeVentes ===");
-    console.log("Nombre de ventes:", ventes.length);
 
-    // ✅ CORRECTION : Convertir les strings en nombres
+    if (DEBUG) {
+      logger.info('DEBUG listeVentes', { count: ventes.length, firstVente: ventes[0] });
+    }
+
+    //  CORRECTION : Convertir les strings en nombres
     const ventesFormatted = ventes.map(v => ({
       id_vente: v.id_vente,
       date_vente: v.date_vente,
@@ -35,19 +40,17 @@ export async function listeVentes(req, res) {
       reste: parseFloat(v.reste) || 0
     }));
 
-    console.log("Première vente formatée:", ventesFormatted[0]);
-
     const totalRestes = ventesFormatted.reduce((sum, v) => {
       return sum + v.reste;
     }, 0);
 
     res.render("listeventes", {
-      ventes: ventesFormatted, // ✅ Utiliser les données formatées
+      ventes: ventesFormatted, //  Utiliser les données formatées
       totalRestes,
       filterName: client || ''
     });
   } catch (err) {
-    console.error("Erreur listeVentes:", err);
+    logger.error("Erreur listeVentes:", err);
     res.status(500).send("Erreur chargement liste des ventes");
   }
 }
@@ -65,7 +68,7 @@ export async function pageVente(req, res) {
       clients: clients || []
     });
   } catch (err) {
-    console.error("Erreur pageVente:", err);
+    logger.error("Erreur pageVente:", err);
     res.status(500).send("Erreur chargement page de vente");
   }
 }
@@ -78,12 +81,15 @@ export async function traiterVente(req, res) {
   
   try {
     let { client_id, date_vente, produits, montant_paye, montant_donne, mode_paiement } = req.body;
-    
-    console.log("Données reçues:", req.body); // Debug
+
+    if (DEBUG) {
+      logger.info('Received sale data', { body: req.body });
+    }
 
     // Validation des données requises
     if (!produits) {
-      return res.status(400).send("Aucun produit sélectionné !");
+      req.flash('error_msg', 'Aucun produit sélectionné');
+      return res.redirect('/ventes/nouveau');
     }
 
     // Gérer le format des produits (peut être un tableau ou une string)
@@ -97,30 +103,45 @@ export async function traiterVente(req, res) {
     }
 
     if (!Array.isArray(produitsArray) || produitsArray.length === 0) {
-      return res.status(400).send("Format des produits invalide !");
+      req.flash('error_msg', 'Format des produits invalide');
+      return res.redirect('/ventes/nouveau');
     }
 
     // Convertir client_id en number ou null
     clientId = client_id ? parseInt(client_id) : null;
 
-    // Définitions par défaut - SUPPRIMER LA TAXE
-    const montantDonne = parseFloat(montant_donne) || 0;
-    const montantPaye = parseFloat(montant_paye) || 0;
+    // Définitions par défaut
     date_vente = date_vente || new Date().toISOString().slice(0, 16);
 
+    // --- GESTION DES PAIEMENTS (NOUVEAU) ---
+    // Vérifier s'il y a une liste de paiements (cas paiements multiples)
+    let listePaiements = [];
+    if (req.body.paiements) {
+      try {
+        listePaiements = typeof req.body.paiements === 'string' 
+          ? JSON.parse(req.body.paiements) 
+          : req.body.paiements;
+      } catch (e) {
+        logger.error("Erreur parsing paiements:", e);
+        listePaiements = [];
+      }
+    }
+
+    // Build and validate products array BEFORE starting any DB writes
+    const products = [];
     let total_ht = 0;
     let total_marge = 0;
-    const detailsVente = [];
 
-    // Calcul des totaux et validation des produits
+    // FIRST: Validate ALL products before starting any database operations
     for (const p of produitsArray) {
       const produitId = p.produit_id || p.id;
       if (!produitId) continue;
 
       const produit = await getProduitById(produitId);
       if (!produit) {
-        console.warn(`Produit non trouvé: ${produitId}`);
-        continue;
+        if (DEBUG) logger.warn(`Produit non trouvé: ${produitId}`);
+        req.flash('error_msg', `Produit #${produitId} non trouvé`);
+        return res.redirect('/ventes/nouveau');
       }
 
       const qty = parseInt(p.quantite) || 1;
@@ -129,7 +150,8 @@ export async function traiterVente(req, res) {
 
       // Validation du stock
       if (qty > produit.quantite_stock) {
-        return res.status(400).send(`Stock insuffisant pour ${produit.nom}. Stock disponible: ${produit.quantite_stock}`);
+        req.flash('error_msg', `Stock insuffisant pour ${produit.nom}. Stock disponible: ${produit.quantite_stock}`);
+        return res.redirect('/ventes/nouveau');
       }
 
       const subtotal = qty * prixVente;
@@ -138,98 +160,91 @@ export async function traiterVente(req, res) {
       total_ht += subtotal;
       total_marge += marge;
 
-      detailsVente.push({
-        produit_id: produitId,
+      products.push({
+        produitId,
         quantite: qty,
-        prix_vente: prixVente,
-        prix_achat: prixAchat,
+        prixVente,
+        prixAchat,
         subtotal,
         marge
       });
     }
 
     if (total_ht === 0) {
-      return res.status(400).send("Aucun produit valide dans la vente !");
+      req.flash('error_msg', 'Aucun produit valide dans la vente');
+      return res.redirect('/ventes/nouveau');
     }
 
     // SUPPRIMER LE CALCUL DE TAXE - TOTAL TTC = TOTAL HT
     const total_ttc = total_ht; // Pas de taxe
-    const tax = 0; // Taxe toujours à 0
+
+    // Normalize payments array
+    const paiements = [];
     
-    // Calculs corrigés
-    const monnaieRendue = Math.max(0, montantDonne - montantPaye);
-    const reste = total_ttc - montantPaye;
-
-    console.log("Création vente avec:", { // Debug
-      client_id: clientId,
-      total_ht,
-      tax, // Toujours 0
-      total_ttc, // Égal à total_ht
-      montant_donne: montantDonne,
-      montant_paye: montantPaye,
-      monnaie_rendue: monnaieRendue,
-      reste
-    });
-
-    // 1️⃣ Créer la vente
-    const vente_id = await createVente({
-      client_id: clientId,
-      date_vente,
-      total_ht,
-      tax: 0, // Taxe forcée à 0
-      total_ttc: total_ht, // Total TTC = Total HT
-      montant_paye: montantPaye,
-      reste
-    });
-
-    if (!vente_id) {
-      throw new Error("Échec de la création de la vente");
+    if (listePaiements.length > 0) {
+      // Cas : Liste de paiements explicite
+      for (const p of listePaiements) {
+        const montantP = parseFloat(p.amount || p.montant || 0);
+        if (montantP > 0) {
+          paiements.push({
+            montant: montantP,
+            mode: p.mode || 'cash'
+          });
+        }
+      }
+    } else {
+      // Cas : Paiement simple via le formulaire standard
+      const montantPaye = parseFloat(montant_paye) || 0;
+      if (montantPaye > 0) {
+        paiements.push({
+          montant: montantPaye,
+          mode: mode_paiement || 'cash'
+        });
+      }
     }
 
-    // 2️⃣ Ajouter les produits à la vente
-    for (const detail of detailsVente) {
-      await addVenteDetail({
-        vente_id,
-        produit_id: detail.produit_id,
-        quantite: detail.quantite,
-        prix_vente: detail.prix_vente,
-        prix_achat: detail.prix_achat,
-        subtotal: detail.subtotal,
-        marge: detail.marge
-      });
+    const montantDonne = parseFloat(montant_donne) || 0;
+    const montantTotalPaye = paiements.reduce((sum, p) => sum + p.montant, 0);
+    const monnaieRendue = Math.max(0, montantDonne - montantTotalPaye);
+    const reste = Math.max(0, total_ttc - montantTotalPaye);
 
-      // Mettre à jour le stock
-      const produit = await getProduitById(detail.produit_id);
-      const newStock = produit.quantite_stock - detail.quantite;
-      await updateStock(detail.produit_id, newStock);
-    }
-
-    // 3️⃣ Paiement initial
-    if (montantPaye > 0) {
-      await addPaiement({
-        vente_id,
-        montant: montantPaye,
-        mode: mode_paiement || "cash",
-        date_paiement: new Date()
+    if (DEBUG) {
+      logger.info("Processing sale with transaction", {
+        client_id: clientId,
+        total_ht,
+        total_ttc,
+        montant_paye: montantTotalPaye,
+        reste,
+        paymentsCount: paiements.length
       });
     }
+
+    // USE TRANSACTION FOR ATOMIC OPERATIONS
+    const vente_id = await processSaleWithTransaction({
+      clientId,
+      dateVente: new Date(date_vente),
+      products,
+      totalHT: total_ht,
+      totalTTC: total_ttc,
+      paiements
+    });
+
+    logger.info('Sale created successfully with transaction', { saleId: vente_id });
 
     res.render("successVente", {
       message: `Vente enregistrée avec succès ! Code : ${vente_id}`,
       vente_id,
       montant_total: total_ttc,
       montant_donne: montantDonne,
-      montant_paye: montantPaye,
+      montant_paye: montantTotalPaye,
       monnaie_rendue: monnaieRendue,
       reste_a_payer: reste
     });
 
   } catch (err) {
-    console.error("Erreur traiterVente:", err);
-    res.status(500).render("error", {
-      message: "Erreur lors de l'enregistrement de la vente",
-      error: err.message
-    });
+    logger.error("Erreur traiterVente:", err);
+    req.flash('error_msg', `Erreur lors de la création de la vente: ${err.message}`);
+    return res.redirect('/ventes/nouveau');
   }
 }
 
@@ -282,7 +297,7 @@ export async function detailsVente(req, res) {
     });
 
   } catch (err) {
-    console.error("Erreur detailsVente:", err);
+    logger.error("Erreur detailsVente:", err);
     res.status(500).render("error", {
       message: "Erreur récupération détails vente",
       error: err.message
@@ -299,33 +314,64 @@ export async function ajouterPaiement(req, res) {
     const { montant, mode } = req.body;
 
     if (!montant || isNaN(montant) || parseFloat(montant) <= 0) {
-      return res.status(400).send("Montant invalide");
+      req.flash('error_msg', 'Montant invalide');
+      return res.redirect(`/ventes/${id}`);
     }
 
-    const vente = await getVenteById(id);
-    if (!vente) {
-      return res.status(404).send("Vente non trouvée");
-    }
-
-    const reste = Math.max(0, parseFloat(vente.total_ttc) - parseFloat(vente.montant_paye));
     const montantFloat = parseFloat(montant);
 
-    if (montantFloat > reste) {
-      return res.status(400).send(`Le montant du paiement (${montantFloat}) dépasse le reste à payer (${reste}).`);
-    }
+    // Use transaction with row locking to prevent race conditions
+    await withTransaction(async (connection) => {
+      // Lock the vente row for update
+      const [ventes] = await connection.execute(
+        'SELECT id_vente, total_ttc, montant_paye, reste FROM vente WHERE id_vente = ? FOR UPDATE',
+        [id]
+      );
 
-    await addPaiement({
-      vente_id: id,
-      montant: montantFloat,
-      mode: mode || "cash",
-      date_paiement: new Date()
+      if (!ventes || ventes.length === 0) {
+        throw new Error('Vente non trouvée');
+      }
+
+      const vente = ventes[0];
+      const resteActuel = parseFloat(vente.reste);
+
+      // Verify payment doesn't exceed remaining amount
+      if (montantFloat > resteActuel + 0.01) { // Small tolerance for floating point
+        throw new Error(`Le montant (${montantFloat.toFixed(2)}) dépasse le reste à payer (${resteActuel.toFixed(2)})`);
+      }
+
+      // Insert payment
+      await connection.execute(
+        'INSERT INTO paiement (vente_id, montant, mode) VALUES (?, ?, ?)',
+        [id, montantFloat, mode || 'cash']
+      );
+
+      // Recalculate totals from database
+      const [payments] = await connection.execute(
+        'SELECT SUM(montant) as total_paye FROM paiement WHERE vente_id = ?',
+        [id]
+      );
+      
+      const totalPaye = parseFloat(payments[0].total_paye) || 0;
+      const totalTTC = parseFloat(vente.total_ttc);
+      const nouveauMontantPaye = Math.min(totalTTC, totalPaye);
+      const nouveauReste = Math.max(0, totalTTC - nouveauMontantPaye);
+
+      // Update vente with new totals
+      await connection.execute(
+        'UPDATE vente SET montant_paye = ?, reste = ? WHERE id_vente = ?',
+        [nouveauMontantPaye, nouveauReste, id]
+      );
     });
 
+    logger.info('Payment added successfully', { venteId: id, montant: montantFloat });
+    req.flash('success_msg', 'Paiement ajouté avec succès');
     res.redirect(`/ventes/${id}`);
 
   } catch (err) {
-    console.error("Erreur ajouterPaiement:", err);
-    res.status(500).send("Erreur ajout paiement");
+    logger.error("Erreur ajouterPaiement:", err);
+    req.flash('error_msg', err.message || 'Erreur ajout paiement');
+    res.redirect('/ventes');
   }
 }
 
@@ -335,15 +381,43 @@ export async function ajouterPaiement(req, res) {
 export async function deleteVenteController(req, res) {
   try {
     const { id } = req.params;
-    const result = await deleteVente(id);
     
-    if (!result) {
-      return res.status(404).send("Vente non trouvée");
-    }
+    // Use transaction to restore stock atomically before deleting
+    await withTransaction(async (connection) => {
+      // Get sale details to restore stock
+      const [details] = await connection.execute(
+        'SELECT produit_id, quantite FROM vente_details WHERE vente_id = ?',
+        [id]
+      );
+
+      // Restore stock for each product
+      for (const detail of details) {
+        await connection.execute(
+          'UPDATE produit SET quantite_stock = quantite_stock + ? WHERE id_produit = ?',
+          [detail.quantite, detail.produit_id]
+        );
+      }
+
+      // Delete payments
+      await connection.execute('DELETE FROM paiement WHERE vente_id = ?', [id]);
+      
+      // Delete sale details
+      await connection.execute('DELETE FROM vente_details WHERE vente_id = ?', [id]);
+      
+      // Delete sale
+      const [result] = await connection.execute('DELETE FROM vente WHERE id_vente = ?', [id]);
+      
+      if (result.affectedRows === 0) {
+        throw new Error('Vente non trouvée');
+      }
+    });
     
+    logger.info('Sale deleted and stock restored', { venteId: id });
+    req.flash('success_msg', 'Vente supprimée avec succès et stock restauré');
     res.redirect("/ventes");
   } catch (err) {
-    console.error("Erreur suppression vente:", err);
-    res.status(500).send("Erreur suppression vente");
+    logger.error("Erreur suppression vente:", err);
+    req.flash('error_msg', err.message || 'Erreur suppression vente');
+    res.redirect("/ventes");
   }
 }

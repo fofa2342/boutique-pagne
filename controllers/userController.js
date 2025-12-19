@@ -1,11 +1,12 @@
 import { getAllUsers, deleteUser, findUserById } from '../models/userModel.js';
+import logger from '../config/logger.js';
 
 export const listUsers = async (req, res) => {
     try {
         const users = await getAllUsers();
         res.render('users', { users, currentUser: req.user });
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         req.flash('error_msg', 'Erreur lors de la récupération des utilisateurs');
         res.redirect('/dashboard');
     }
@@ -51,7 +52,7 @@ export const deleteUserById = async (req, res) => {
         req.flash('success_msg', 'Utilisateur supprimé avec succès');
         res.redirect('/users');
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         req.flash('error_msg', 'Erreur lors de la suppression');
         res.redirect('/users');
     }

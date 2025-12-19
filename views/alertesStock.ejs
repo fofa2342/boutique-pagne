@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alertes Stock</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f7fa; color: #2c3e50; margin: 0; padding: 30px; }
+    .card { max-width: 980px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    h1 { margin: 0 0 14px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border-bottom: 1px solid #eef2f5; padding: 10px; text-align: left; }
+    th { background: #eef2f5; }
+    a { color: #3498db; text-decoration: none; }
+    .muted { opacity: 0.8; }
+    .actions { margin-top: 16px; }
+    .btn { display: inline-block; padding: 10px 14px; border-radius: 6px; background: #bdc3c7; color: #2c3e50; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Alertes stock</h1>
+
+    <% if (produits && produits.length > 0) { %>
+      <table>
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th>Stock</th>
+            <th>Seuil</th>
+            <th>Fournisseur</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% produits.forEach(p => { %>
+            <tr>
+              <td><a href="/produits/<%= p.id_produit %>"><%= p.nom %></a></td>
+              <td><%= p.quantite_stock %></td>
+              <td><%= p.seuil_alerte %></td>
+              <td class="muted"><%= p.fournisseur_nom || '—' %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    <% } else { %>
+      <p class="muted">Aucun produit en alerte.</p>
+    <% } %>
+
+    <div class="actions">
+      <a class="btn" href="/produits">Retour produits</a>
+    </div>
+  </div>
+</body>
+</html>

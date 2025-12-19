@@ -22,6 +22,7 @@ import {
   modifierMouvement,
   supprimerMouvement
 } from "../controllers/produitController.js";
+import { validateProduct, validateStockEntry, validateId } from '../middleware/validators.js';
 
 const router = express.Router();
 
@@ -36,9 +37,9 @@ router.post("/mouvements/supprimer/:id", supprimerMouvement);
 // Routes pour les produits
 router.get("/", listeProduits);
 router.get("/ajout", showAjoutProduit);
-router.post("/ajout", ajouterProduit);
+router.post("/ajout", validateProduct, ajouterProduit);
 router.get("/entree", entreeStock);
-router.post("/entree", traiterEntreeStock);
+router.post("/entree", validateStockEntry, traiterEntreeStock);
 router.get("/entree-multiple", entreeStockMultiple);
 router.post("/entree-multiple", traiterEntreeStockMultiple);
 router.get("/sortie", sortieStock);
@@ -47,8 +48,7 @@ router.get("/alertes", alertesStock);
 router.get("/historique", historiqueMouvements);
 router.get("/:id", ficheProduit);
 router.get("/:id/historique", historiqueProduit);
-router.put("/:id", modifierProduit);
-router.delete("/:id", supprimerProduit);
-router.post("/modifier/:id", modifierProduit);
-router.post("/supprimer/:id", supprimerProduit);
+router.put("/:id", validateId, validateProduct, modifierProduit);
+router.post("/modifier/:id", validateId, validateProduct, modifierProduit);
+router.post("/supprimer/:id", validateId, supprimerProduit);
 export default router;

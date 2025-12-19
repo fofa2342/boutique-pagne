@@ -1,5 +1,6 @@
 // models/fournisseurModel.js
-import pool from "../config/db.js";
+import pool from "../config/db.js";import logger from '../config/logger.js';
+const DEBUG = process.env.NODE_ENV !== 'production';
 
 // Créer un fournisseur
 export async function createFournisseur(fournisseurData) {
@@ -37,8 +38,10 @@ export async function updateFournisseur(id, fournisseurData) {
   const { nom, telephone, email, pays } = fournisseurData;
   
   try {
-    console.log("🔄 updateFournisseur - ID:", id);
-    console.log("📊 Données à mettre à jour:", fournisseurData);
+    if (DEBUG) {
+      logger.info(" updateFournisseur - ID:", id);
+      logger.info(" Données à mettre à jour:", fournisseurData);
+    }
     
     const [result] = await pool.execute(
       `UPDATE fournisseur 
@@ -47,11 +50,13 @@ export async function updateFournisseur(id, fournisseurData) {
       [nom, telephone, email, pays, id]
     );
     
-    console.log("✅ updateFournisseur - Résultat:", result);
-    console.log("✅ Rows affected:", result.affectedRows);
+    if (DEBUG) {
+      logger.info(" updateFournisseur - Résultat:", result);
+      logger.info(" Rows affected:", result.affectedRows);
+    }
     
   } catch (error) {
-    console.error("❌ ERREUR dans updateFournisseur:", error);
+    logger.error(" ERREUR dans updateFournisseur:", error);
     throw error;
   }
 }

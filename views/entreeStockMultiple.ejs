@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entrée Stock Multiple</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f7fa; color: #2c3e50; margin: 0; padding: 30px; }
+    .card { max-width: 980px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 22px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+    h1 { margin: 0 0 14px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    label { display: block; font-weight: 700; margin-bottom: 6px; }
+    input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid #d7dde3; border-radius: 6px; }
+    textarea { min-height: 90px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 18px; }
+    th, td { border-bottom: 1px solid #eef2f5; padding: 10px; text-align: left; }
+    th { background: #eef2f5; }
+    .actions { margin-top: 16px; display: flex; gap: 10px; }
+    button, a { padding: 10px 14px; border-radius: 6px; border: none; cursor: pointer; text-decoration: none; }
+    button { background: #3498db; color: #fff; }
+    a { background: #bdc3c7; color: #2c3e50; }
+    .hint { margin: 8px 0 0; color: #34495e; opacity: 0.9; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Entrée de stock multiple</h1>
+    <p class="hint">Remplis au moins une ligne produit avec une quantité &gt; 0.</p>
+
+    <form action="/produits/entree-multiple" method="POST">
+      <div class="grid">
+        <div>
+          <label for="fournisseur_nom">Fournisseur *</label>
+          <input id="fournisseur_nom" name="fournisseur_nom" required />
+        </div>
+        <div>
+          <label for="raison">Raison</label>
+          <input id="raison" name="raison" placeholder="Ex: Réassort" />
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label for="notes">Notes</label>
+          <textarea id="notes" name="notes"></textarea>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Produit</th>
+            <th style="width: 160px;">Quantité</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% for (let i = 0; i < 5; i++) { %>
+            <tr>
+              <td>
+                <select name="produits[<%= i %>][produit_id]">
+                  <option value="">-- Choisir --</option>
+                  <% (produits || []).forEach(p => { %>
+                    <option value="<%= p.id_produit %>"><%= p.nom %></option>
+                  <% }) %>
+                </select>
+              </td>
+              <td>
+                <input type="number" min="0" step="1" name="produits[<%= i %>][quantite]" value="0" />
+              </td>
+            </tr>
+          <% } %>
+        </tbody>
+      </table>
+
+      <div class="actions">
+        <button type="submit">Enregistrer</button>
+        <a href="/produits">Annuler</a>
+      </div>
+    </form>
+  </div>
+</body>
+</html>
