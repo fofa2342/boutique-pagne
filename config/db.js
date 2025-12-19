@@ -20,20 +20,14 @@ if (!DB_HOST || !DB_USER || !DB_PASS || !DB_NAME) {
 // SSL Configuration
 const sslConfig = {};
 if (NODE_ENV === 'production') {
-  // In production, use proper SSL certificate validation
-  if (DB_SSL_CA && fs.existsSync(DB_SSL_CA)) {
-    sslConfig.ssl = {
-      ca: fs.readFileSync(DB_SSL_CA),
-      rejectUnauthorized: true
-    };
-  } else {
-    // For managed databases (like Aiven), use their SSL settings
-    sslConfig.ssl = {
-      rejectUnauthorized: true
-    };
-  }
+  // For Aiven and similar managed databases with self-signed certificates
+  // Accept self-signed but still use SSL encryption
+  sslConfig.ssl = {
+    rejectUnauthorized: false  // Accept self-signed certificates
+  };
+  console.log('[INFO] Production mode: SSL enabled with relaxed certificate validation for managed databases');
 } else {
-  // Development: Allow self-signed certificates (but log warning)
+  // Development: Allow self-signed certificates
   console.warn('[WARNING] Development mode: SSL certificate validation is relaxed');
   sslConfig.ssl = {
     rejectUnauthorized: false
