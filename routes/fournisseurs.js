@@ -8,13 +8,15 @@ import {
   supprimerFournisseur
 } from "../controllers/fournisseurController.js";
 import { validateSupplier, validateId } from '../middleware/validators.js';
+import { getAllPays } from "../models/paysModel.js";
 
 const router = express.Router();
 
 // Routes pour les fournisseurs
 router.get("/", listeFournisseurs);
-router.get("/inscription", (req, res) => {
-  res.render("inscriptionFournisseur");
+router.get("/inscription", async (req, res) => {
+  const pays = await getAllPays();
+  res.render("inscriptionFournisseur", { pays });
 });
 router.post("/inscription", validateSupplier, inscriptionFournisseur);
 router.get("/:id", validateId, detailsFournisseur);

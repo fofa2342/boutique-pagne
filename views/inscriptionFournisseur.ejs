@@ -255,7 +255,7 @@
           <rect x="3" y="14" width="7" height="7"></rect>
         </svg>
       </span>
-      <h1>Gestion Fournisseurs</h1>
+      <h1>BRYANH shop</h1>
     </div>
     
     <div class="nav-section">
@@ -326,13 +326,11 @@
           <label for="pays" class="required">Pays :</label>
           <select id="pays" name="pays" required>
             <option value="">Sélectionnez un pays</option>
-            <option value="France">France</option>
-            <option value="Belgique">Belgique</option>
-            <option value="Suisse">Suisse</option>
-            <option value="Allemagne">Allemagne</option>
-            <option value="Espagne">Espagne</option>
-            <option value="Italie">Italie</option>
-            <option value="Autre">Autre</option>
+            <% if (pays && pays.length > 0) { %>
+              <% pays.forEach(p => { %>
+                <option value="<%= p.nom %>"><%= p.drapeau %> <%= p.nom %></option>
+              <% }) %>
+            <% } %>
           </select>
         </div>
 

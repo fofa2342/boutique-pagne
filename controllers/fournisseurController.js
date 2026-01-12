@@ -7,6 +7,7 @@ import {
   updateFournisseur, 
   deleteFournisseur 
 } from "../models/fournisseurModel.js";
+import { getAllPays } from "../models/paysModel.js";
 
 const DEBUG = process.env.NODE_ENV !== 'production';
 
@@ -37,7 +38,8 @@ export async function inscriptionFournisseur(req, res) {
 export async function listeFournisseurs(req, res) {
   try {
     const fournisseurs = await getAllFournisseurs();
-    res.render("fournisseurs", { fournisseurs });
+    const pays = await getAllPays();
+    res.render("fournisseurs", { fournisseurs, pays });
   } catch (error) {
     logger.error("Erreur liste:", error);
     res.status(500).send("Erreur lors de la récupération des fournisseurs: " + error.message);

@@ -25,6 +25,7 @@ import pool from './config/db.js';
 import expressMySQLSession from 'express-mysql-session';
 import logger from './config/logger.js';
 import { escapeHtml, safeJson } from './utils/escapeHtml.js';
+import { initPaysTable } from './models/paysModel.js';
 
 const MySQLStore = expressMySQLSession(session);
 
@@ -284,7 +285,15 @@ app.use((err, req, res, next) => {
 });
 
 // Serveur
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   logger.info(`Server running on http://localhost:${PORT}`);
   logger.info(`[INFO] Environment: ${process.env.NODE_ENV || 'development'}`);
+  
+  // Initialize countries table
+  try {
+    await initPaysTable();
+    logger.info('[INFO] Countries table initialized');
+  } catch (error) {
+    logger.error('[ERROR] Failed to initialize countries table:', error.message);
+  }
 });

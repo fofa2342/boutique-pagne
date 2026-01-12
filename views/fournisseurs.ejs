@@ -324,7 +324,7 @@
           <rect x="3" y="14" width="7" height="7"></rect>
         </svg>
       </span>
-      <h1>Gestion Fournisseurs</h1>
+      <h1>BRYANH shop</h1>
     </div>
     
     <div class="nav-section">
@@ -403,25 +403,18 @@
         <tbody>
           <% if (fournisseurs && fournisseurs.length > 0) { %>
             <% fournisseurs.forEach(fournisseur => { %>
+              <% 
+                // Find the flag from the pays array
+                const paysInfo = pays.find(p => p.nom === fournisseur.pays);
+                const drapeau = paysInfo ? paysInfo.drapeau : '🌍';
+              %>
               <tr>
                 <td><%= fournisseur.id_fournisseur %></td>
                 <td><%= fournisseur.nom %></td>
                 <td><%= fournisseur.telephone %></td>
                 <td><%= fournisseur.email %></td>
                 <td>
-                  <span class="country-flag">
-                    <% 
-                      const flags = {
-                        'France': '🇫🇷',
-                        'Belgique': '🇧🇪', 
-                        'Suisse': '🇨🇭',
-                        'Allemagne': '🇩🇪',
-                        'Espagne': '🇪🇸',
-                        'Italie': '🇮🇹'
-                      };
-                    %>
-                    <%= flags[fournisseur.pays] || '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>' %>
-                  </span>
+                  <span class="country-flag"><%= drapeau %></span>
                   <%= fournisseur.pays %>
                 </td>
                 <td class="actions-cell">
@@ -488,13 +481,11 @@
           <label class="form-label">Pays</label>
           <select name="pays" class="form-input" required>
             <option value="">Sélectionnez un pays</option>
-            <option value="France">France</option>
-            <option value="Belgique">Belgique</option>
-            <option value="Suisse">Suisse</option>
-            <option value="Allemagne">Allemagne</option>
-            <option value="Espagne">Espagne</option>
-            <option value="Italie">Italie</option>
-            <option value="Autre">Autre</option>
+            <% if (pays && pays.length > 0) { %>
+              <% pays.forEach(p => { %>
+                <option value="<%= p.nom %>"><%= p.drapeau %> <%= p.nom %></option>
+              <% }) %>
+            <% } %>
           </select>
         </div>
 
