@@ -7,12 +7,12 @@ const DEBUG = process.env.NODE_ENV !== 'production';
 
 // Créer une vente
 export async function createVente(data) {
-  const { client_id, date_vente, total_ht, tax, total_ttc, montant_paye, reste } = data;
+  const { client_id, date_vente, total_ht, tax, total_ttc, montant_paye, reste, magasin } = data;
 
   const [result] = await pool.execute(
-    `INSERT INTO vente (client_id, date_vente, total_ht, tax, total_ttc, montant_paye, reste)
-     VALUES (?, ?, ?, ?, ?, ?, ?)`,
-    [client_id, date_vente, total_ht, tax, total_ttc, montant_paye, reste]
+    `INSERT INTO vente (client_id, date_vente, total_ht, tax, total_ttc, montant_paye, reste, magasin)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [client_id, date_vente, total_ht, tax, total_ttc, montant_paye, reste, magasin || 'Magasin 1']
   );
 
   return result.insertId;
@@ -122,6 +122,7 @@ export async function getAllVentes(filters = {}) {
         v.total_ttc,
         v.montant_paye,
         v.reste,
+        v.magasin,
         c.nom as client_nom
       FROM vente v
       LEFT JOIN client c ON v.client_id = c.id_client

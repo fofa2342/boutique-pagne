@@ -5,8 +5,11 @@ import { getDashboardStats, getMonthlyStats } from "../models/dashboardModel.js"
 // Page principale du tableau de bord
 export async function showDashboard(req, res) {
   try {
-    const stats = await getDashboardStats();
-    const monthlyStats = await getMonthlyStats();
+    // Run queries in parallel to reduce latency
+    const [stats, monthlyStats] = await Promise.all([
+      getDashboardStats(),
+      getMonthlyStats()
+    ]);
     
     res.render("dashboard", {
       stats,
@@ -26,8 +29,11 @@ export async function showDashboard(req, res) {
 // Route pour la page HTML du dashboard
 export async function renderDashboardPage(req, res) {
   try {
-    const stats = await getDashboardStats();
-    const monthlyStats = await getMonthlyStats();
+    // Run queries in parallel to reduce latency
+    const [stats, monthlyStats] = await Promise.all([
+      getDashboardStats(),
+      getMonthlyStats()
+    ]);
     
     // Rendre le template EJS avec les données
     res.render('dashboard', {
@@ -46,8 +52,11 @@ export async function renderDashboardPage(req, res) {
 // Route API pour les données JSON (gardez votre fonction existante)
 export async function getDashboardData(req, res) {
   try {
-    const stats = await getDashboardStats();
-    const monthlyStats = await getMonthlyStats();
+    // Run queries in parallel to reduce latency
+    const [stats, monthlyStats] = await Promise.all([
+      getDashboardStats(),
+      getMonthlyStats()
+    ]);
     
     res.json({
       success: true,

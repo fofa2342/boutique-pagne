@@ -461,6 +461,15 @@
       </div>
 
       <form action="/produits/entree" method="POST">
+        <!-- Sélection du magasin -->
+        <div class="form-group">
+          <label for="magasin" class="required">Magasin :</label>
+          <select id="magasin" name="magasin" required>
+            <option value="Magasin 1">Magasin 1</option>
+            <option value="Magasin 2">Magasin 2</option>
+          </select>
+        </div>
+
         <!-- Informations fournisseur -->
         <div class="form-group">
           <label for="fournisseur_nom" class="required">Fournisseur :</label>

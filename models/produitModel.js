@@ -119,14 +119,14 @@ export async function updateStock(id, nouvelleQuantite) {
 
 // Gestion des mouvements de stock avec MySQL
 export async function createMouvementStock(mouvementData) {
-  const { produit_id, type, quantite, fournisseur_nom, raison, notes, prix_achat } = mouvementData;
+  const { produit_id, type, quantite, fournisseur_nom, raison, notes, prix_achat, magasin } = mouvementData;
   
   try {
     const [result] = await pool.execute(
       `INSERT INTO mouvement_stock 
-       (produit_id, type, quantite, fournisseur_nom, raison, notes, prix_achat) 
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [produit_id, type, quantite, fournisseur_nom, raison || '', notes || '', prix_achat || null]
+       (produit_id, type, quantite, fournisseur_nom, raison, notes, prix_achat, magasin) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [produit_id, type, quantite, fournisseur_nom, raison || '', notes || '', prix_achat || null, magasin || 'Magasin 1']
     );
     
     logger.info('Stock movement created', { movementId: result.insertId });

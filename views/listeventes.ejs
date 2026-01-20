@@ -379,6 +379,7 @@
         <thead>
           <tr>
             <th>ID</th>
+            <th>Magasin</th>
             <th>Client</th>
             <th>Date</th>
             <th class="text-right">Total TTC</th>
@@ -393,6 +394,7 @@
             <% ventes.forEach(v => { %>
               <tr>
                 <td><%= v.id_vente %></td>
+                <td><%= v.magasin || 'Magasin 1' %></td>
                 <td><%= v.client_nom %></td>
                 <td><%= v.date_vente ? new Date(v.date_vente).toLocaleString() : '' %></td>
                 <td class="text-right"><%= typeof v.total_ttc === 'number' ? v.total_ttc.toFixed(2) : '0.00' %></td>

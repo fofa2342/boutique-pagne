@@ -86,6 +86,7 @@
           <tr>
             <th>Date</th>
             <th>Produit</th>
+            <th>Magasin</th>
             <th>Quantité</th>
             <% if (type === 'entree') { %>
               <th>Fournisseur</th>
@@ -101,6 +102,7 @@
               <tr>
                 <td><%= new Date(m.date_mouvement).toLocaleDateString('fr-FR') %></td>
                 <td><%= m.produit_nom %></td>
+                <td><%= m.magasin || 'Magasin 1' %></td>
                 <td><%= m.quantite %></td>
                 <% if (type === 'entree') { %>
                   <td><%= m.fournisseur_nom || 'N/A' %></td>
@@ -117,7 +119,7 @@
             <% }) %>
           <% } else { %>
             <tr>
-              <td colspan="7" style="text-align: center; padding: 40px;">Aucun mouvement trouvé pour les filtres sélectionnés.</td>
+              <td colspan="8" style="text-align: center; padding: 40px;">Aucun mouvement trouvé pour les filtres sélectionnés.</td>
             </tr>
           <% } %>
         </tbody>

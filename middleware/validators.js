@@ -97,6 +97,10 @@ export const validateStockEntry = [
     .optional({ checkFalsy: true })
     .isFloat({ min: 0 }).withMessage('Le prix d\'achat doit être un nombre positif')
     .toFloat(),
+  body('magasin')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isIn(['Magasin 1', 'Magasin 2']).withMessage('Magasin invalide'),
   handleValidationErrors
 ];
 

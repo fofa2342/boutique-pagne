@@ -86,13 +86,13 @@ export async function updateStockWithTransaction(produitId, quantityChange, move
  */
 export async function processSaleWithTransaction(saleData) {
   return withTransaction(async (connection) => {
-    const { clientId, dateVente, products, totalHT, totalTTC, paiements } = saleData;
+    const { clientId, dateVente, products, totalHT, totalTTC, paiements, magasin } = saleData;
 
     // 1. Create sale record
     const [saleResult] = await connection.execute(
-      `INSERT INTO vente (client_id, date_vente, total_ht, tax, total_ttc, montant_paye, reste)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [clientId, dateVente, totalHT, 0, totalTTC, 0, totalTTC]
+      `INSERT INTO vente (client_id, date_vente, total_ht, tax, total_ttc, montant_paye, reste, magasin)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [clientId, dateVente, totalHT, 0, totalTTC, 0, totalTTC, magasin || 'Magasin 1']
     );
 
     const venteId = saleResult.insertId;

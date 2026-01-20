@@ -66,12 +66,15 @@ export async function ajouterProduit(req, res) {
 // Entrée de stock - Version améliorée
 export async function entreeStock(req, res) {
   try {
-    const produits = await getAllProduits();
-    const fournisseurs = await getAllFournisseurs(); // 🔹 ajout
+    // Run queries in parallel to reduce latency
+    const [produits, fournisseurs] = await Promise.all([
+      getAllProduits(),
+      getAllFournisseurs()
+    ]);
 
     res.render("entreeStock", { 
       produits,
-      fournisseurs, // 🔹 ajout
+      fournisseurs,
       message: req.query.message || null
     });
   } catch (error) {
@@ -84,7 +87,7 @@ export async function entreeStock(req, res) {
 // Traitement entrée stock - Version améliorée
 export async function traiterEntreeStock(req, res) {
   try {
-    const { produit_id, quantite, fournisseur_nom, raison, notes, prix_achat } = req.body;
+    const { produit_id, quantite, fournisseur_nom, raison, notes, prix_achat, magasin } = req.body;
     
     if (!produit_id || !quantite || !fournisseur_nom) {
       return res.status(400).send("Produit, quantité et fournisseur obligatoires !");
@@ -109,18 +112,21 @@ export async function traiterEntreeStock(req, res) {
       fournisseur_nom,
       raison,
       notes,
-      prix_achat: prix_achat || produit.prix_achat
+      prix_achat: prix_achat || produit.prix_achat,
+      magasin: magasin || 'Magasin 1'
     });
 
     const safeProduitNom = escapeHtml(produit.nom);
     const safeFournisseurNom = escapeHtml(fournisseur_nom);
     const safeRaison = escapeHtml(raison || 'Non spécifiée');
+    const safeMagasin = escapeHtml(magasin || 'Magasin 1');
 
     res.render("successProduit", { 
       message: `Entrée de stock réussie !<br><br>
                 <strong>${escapeHtml(quantite)}</strong> unités ajoutées à <strong>${safeProduitNom}</strong><br>
                 Stock avant: <strong>${ancienStock}</strong> → Stock après: <strong>${nouvelleQuantite}</strong><br>
                 Fournisseur: <strong>${safeFournisseurNom}</strong><br>
+                Magasin: <strong>${safeMagasin}</strong><br>
                 Raison: <strong>${safeRaison}</strong>`
     });
   } catch (error) {
@@ -143,7 +149,7 @@ export async function entreeStockMultiple(req, res) {
 // Traitement entrée multiple
 export async function traiterEntreeStockMultiple(req, res) {
   try {
-    const { fournisseur_nom, raison, notes, produits } = req.body;
+    const { fournisseur_nom, raison, notes, produits, magasin } = req.body;
     
     if (!fournisseur_nom) {
       return res.status(400).send("Nom du fournisseur obligatoire !");
@@ -168,7 +174,8 @@ export async function traiterEntreeStockMultiple(req, res) {
               quantite: produitData.quantite,
               fournisseur_nom,
               raison,
-              notes
+              notes,
+              magasin: magasin || 'Magasin 1'
             });
             
             message += `<li><strong>${escapeHtml(produitData.quantite)}</strong> unités de <strong>${escapeHtml(produit.nom)}</strong> (Stock: ${ancienStock} → ${nouvelleQuantite})</li>`;
@@ -179,6 +186,7 @@ export async function traiterEntreeStockMultiple(req, res) {
     }
     
     message += `</ul><br>Fournisseur: <strong>${escapeHtml(fournisseur_nom)}</strong><br>`;
+    message += `Magasin: <strong>${escapeHtml(magasin || 'Magasin 1')}</strong><br>`;
     message += `Total: <strong>${mouvementsReussis}</strong> produit(s) mis à jour`;
     
     if (mouvementsReussis === 0) {
@@ -206,7 +214,7 @@ export async function sortieStock(req, res) {
 // Traitement sortie stock - Version améliorée
 export async function traiterSortieStock(req, res) {
   try {
-    const { produit_id, quantite, raison, notes } = req.body;
+    const { produit_id, quantite, raison, notes, magasin } = req.body;
     
     if (!produit_id || !quantite) {
       return res.status(400).send("Produit et quantité obligatoires !");
@@ -230,16 +238,19 @@ export async function traiterSortieStock(req, res) {
       quantite,
       fournisseur_nom: 'N/A',
       raison,
-      notes
+      notes,
+      magasin: magasin || 'Magasin 1'
     });
 
     const safeProduitNom = escapeHtml(produit.nom);
     const safeRaison = escapeHtml(raison || 'Non spécifiée');
+    const safeMagasin = escapeHtml(magasin || 'Magasin 1');
     
     res.render("successProduit", { 
       message: `Sortie de stock effectuée !<br><br>
                 <strong>${escapeHtml(quantite)}</strong> unités retirées de <strong>${safeProduitNom}</strong><br>
                 Stock avant: <strong>${ancienStock}</strong> → Stock après: <strong>${nouvelleQuantite}</strong><br>
+                Magasin: <strong>${safeMagasin}</strong><br>
                 Raison: <strong>${safeRaison}</strong>`
     });
   } catch (error) {

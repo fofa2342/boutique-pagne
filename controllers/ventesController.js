@@ -33,6 +33,7 @@ export async function listeVentes(req, res) {
       id_vente: v.id_vente,
       date_vente: v.date_vente,
       client_nom: v.client_nom || 'Non spécifié',
+      magasin: v.magasin || 'Magasin 1',
       total_ht: parseFloat(v.total_ht) || 0,
       tax: parseFloat(v.tax) || 0,
       total_ttc: parseFloat(v.total_ttc) || 0,
@@ -60,8 +61,11 @@ export async function listeVentes(req, res) {
 ------------------------------------------------------------ */
 export async function pageVente(req, res) {
   try {
-    const produits = await getAllProduits();
-    const clients = await getAllClients();
+    // Run queries in parallel to reduce latency
+    const [produits, clients] = await Promise.all([
+      getAllProduits(),
+      getAllClients()
+    ]);
 
     res.render("vente", {
       produits: produits || [],
@@ -80,7 +84,7 @@ export async function traiterVente(req, res) {
   let clientId = null;
   
   try {
-    let { client_id, date_vente, produits, montant_paye, montant_donne, mode_paiement } = req.body;
+    let { client_id, date_vente, produits, montant_paye, montant_donne, mode_paiement, magasin } = req.body;
 
     if (DEBUG) {
       logger.info('Received sale data', { body: req.body });
@@ -226,10 +230,11 @@ export async function traiterVente(req, res) {
       products,
       totalHT: total_ht,
       totalTTC: total_ttc,
-      paiements
+      paiements,
+      magasin: magasin || 'Magasin 1'
     });
 
-    logger.info('Sale created successfully with transaction', { saleId: vente_id });
+    logger.info('Sale created successfully with transaction', { saleId: vente_id, magasin });
 
     res.render("successVente", {
       message: `Vente enregistrée avec succès ! Code : ${vente_id}`,
@@ -262,13 +267,17 @@ export async function detailsVente(req, res) {
       });
     }
 
-    const details = await getVenteDetails(id);
-    const paiements = await getPaiements(id);
+    // Run queries in parallel to reduce latency
+    const [details, paiements] = await Promise.all([
+      getVenteDetails(id),
+      getPaiements(id)
+    ]);
 
     // Formater les données pour la vue
     const venteFormatted = {
       id_vente: vente.id_vente || vente.id,
       client_nom: vente.client_nom || vente.nom || 'Non spécifié',
+      magasin: vente.magasin || 'Magasin 1',
       date_vente: vente.date_vente,
       total_ht: parseFloat(vente.total_ht) || 0,
       tax: parseFloat(vente.tax) || 0,

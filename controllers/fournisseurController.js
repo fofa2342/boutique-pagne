@@ -37,8 +37,11 @@ export async function inscriptionFournisseur(req, res) {
 // Liste des fournisseurs
 export async function listeFournisseurs(req, res) {
   try {
-    const fournisseurs = await getAllFournisseurs();
-    const pays = await getAllPays();
+    // Run queries in parallel to reduce latency
+    const [fournisseurs, pays] = await Promise.all([
+      getAllFournisseurs(),
+      getAllPays()
+    ]);
     res.render("fournisseurs", { fournisseurs, pays });
   } catch (error) {
     logger.error("Erreur liste:", error);
